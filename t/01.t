@@ -4,7 +4,7 @@ use warnings;
 use Test::More qw(no_plan);
 
 BEGIN {
-    use_ok('Cvs::Simple');
+    require_ok("Simple.pm");
 }
 
 my($cvs) = Cvs::Simple->new();

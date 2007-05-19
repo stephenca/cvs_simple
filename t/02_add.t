@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use Test::More qw(no_plan);
-use Cvs::Simple;
+require "Simple.pm";
 
 my($cvsroot) = 'cvs';
 my($cvs) = Cvs::Simple->new(cvsroot=>$cvsroot);
