@@ -2,13 +2,35 @@
 package Cvs::Simple;
 use strict;
 use warnings;
+use Carp;
+use FileHandle;
 
 sub new {
-
+    my($class) = shift;
+    my($self) = {};
+    bless $self, $class;
+    return $self;
 }
 
 sub callback {
 
+
+}
+
+sub cvs_cmd {
+    my($self) = shift;
+    my($cmd)  = shift;
+
+    return unless (defined($cmd) && $cmd);
+
+    my($fh) = FileHandle->new("$cmd|");
+    defined($fh) or croak "Failed to open $cmd:$!";
+
+    
+
+    while(<$fh>) {
+        
+    }
 
 }
 
