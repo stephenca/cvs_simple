@@ -13,8 +13,17 @@ sub new {
 }
 
 sub callback {
+    my($self) = shift;
+    my($func) = shift;
 
+    if(defined($func)) {
+        UNIVERSAL::isa(($func), 'CODE') or do {
+            croak "Argument supplied to callback() should be a coderef.";
+        };
+        $self->{callback} = $func;
+    }
 
+    return $self->{callback};
 }
 
 sub cvs_cmd {
