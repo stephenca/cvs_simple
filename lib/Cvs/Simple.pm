@@ -26,15 +26,23 @@ sub cvs_cmd {
     my($fh) = FileHandle->new("$cmd|");
     defined($fh) or croak "Failed to open $cmd:$!";
 
-    
-
     while(<$fh>) {
-        
+        if($self->callback) {
+            $self->callback->($_);
+        } 
+        else {
+            print STDOUT $_;
+        }
     }
 
+    $fh->close;
+
+    return 1;
 }
 
 sub add {
+    my($self) = shift;
+    my(@args) = @_;
 
 }
 
@@ -53,7 +61,8 @@ sub co {
 }
 
 sub commit {
-
+    my($self) = shift;
+    my(@args) = @_;
 }
 
 sub ci {
@@ -61,16 +70,20 @@ sub ci {
 }
 
 sub diff {
+    my($self) = shift;
+    my(@args) = @_;
 
 }
 
 sub status {
-
+    my($self) = shift;
+    my(@args) = @_;
 
 }
 
 sub update {
-
+    my($self) = shift;
+    my(@args) = @_;
 
 }
 
