@@ -163,6 +163,15 @@ sub update {
 
 }
 
+sub up2date {
+# Checks workspace status. No args.
+    my($self) = shift;
+
+    my($cmd) = $self->_cmd('-nq update -d');
+
+    return $self->cvs_cmd($cmd);
+}
+
 
 1;
 __END__

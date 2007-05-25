@@ -23,6 +23,7 @@ my(@methods) = qw(
     external
     status
     update
+    up2date
     _cmd
 );
 
