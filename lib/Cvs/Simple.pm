@@ -49,6 +49,16 @@ sub cvs_cmd {
     return 1;
 }
 
+sub external {
+    my($self)  = shift;
+    my($repos) = shift;
+
+    if($repos) {
+        $self->{repos} = $repos;
+    }
+    return $self->{repos};
+}
+
 sub add {
 #   Can only be called as:
 #    cvs add file1 [, .... , ]
@@ -56,8 +66,8 @@ sub add {
     my($self) = shift;
     my(@args) = @_;
 
-    my($cmd) = $self->local ?   sprintf("cvs %s add ", $self->local)
-                            :   sprintf("cvs add ");
+    my($cmd) = $self->external  ?   sprintf("cvs %s add ", $self->external)
+                                :   sprintf("cvs add ");
 
     if(@args) {
         $cmd .= join ' ' => @args;
@@ -67,8 +77,20 @@ sub add {
 }
 
 sub add_bin {
+# Can only be called as :
+#    cvs add -kb file1 [, .... , ]
+#    cvs add -kb
+    my($self) = shift;
+    my(@args) = @_;
 
+    my($cmd) = $self->external  ?   sprintf("cvs %s add -kb", $self->external)
+                                :   sprintf("cvs add -kb ");
 
+    if(@args) {
+        $cmd .= join ' ' => @args;
+    }
+
+    return $self->cvs_cmd($cmd);
 }
 
 sub checkout {
