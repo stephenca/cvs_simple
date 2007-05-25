@@ -49,6 +49,34 @@ sub cvs_cmd {
     return 1;
 }
 
+sub merge {
+# merge(old_rev,new_rev,file);
+    my($self) = shift;
+    my(@args) = @_;
+
+    return unless (@args && scalar(@args)==3);
+
+    my($cmd) = $self->_cmd('update');
+    $cmd .= sprintf("-j%s -j%s %s", @args);
+
+    return $self->cvs_cmd($cmd);
+}
+
+sub undo {
+    goto &backout;
+}
+
+sub backout {
+# Revert to previous revision of a file, i.e. backout/undo change(s).
+# backout(current_rev,revert_rev,file);
+    my($self) = shift;
+    my(@args) = @_;
+
+    return unless (@args && scalar(@args)==3);
+
+    return $self->merge(@args);
+}
+
 sub external {
     my($self)  = shift;
     my($repos) = shift;

@@ -14,6 +14,7 @@ isa_ok($cvs,'Cvs::Simple');
 
 my(@methods) = qw(
 	new
+    backout
     callback
 	add	
     add_bin
@@ -21,7 +22,9 @@ my(@methods) = qw(
     commit  ci
     diff
     external
+    merge
     status
+    undo
     update
     up2date
     _cmd
