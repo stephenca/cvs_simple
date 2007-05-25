@@ -158,9 +158,18 @@ sub status {
 }
 
 sub update {
+# update() -> update workspace (cvs -q update -d).
+# update(file) -> update file  (cvs -q update file [file ... ]).
+# Doesn't permit -r.
     my($self) = shift;
     my(@args) = @_;
 
+    my($cmd) = $self->_cmd('-q update');
+
+    $cmd .= @args   ? join ' ' => @args
+                    : '-d';
+
+    return $self->cvs_cmd($cmd);
 }
 
 sub up2date {
