@@ -62,9 +62,10 @@ sub external {
 sub add {
 #   Can only be called as:
 #    cvs add file1 [, .... , ]
-#    cvs add 
     my($self) = shift;
     my(@args) = @_;
+
+    return unless(@args);
 
     my($cmd) = $self->external  ?   sprintf("cvs %s add ", $self->external)
                                 :   sprintf("cvs add ");
@@ -79,9 +80,10 @@ sub add {
 sub add_bin {
 # Can only be called as :
 #    cvs add -kb file1 [, .... , ]
-#    cvs add -kb
     my($self) = shift;
     my(@args) = @_;
+
+    return unless (@args);
 
     my($cmd) = $self->external  ?   sprintf("cvs %s add -kb", $self->external)
                                 :   sprintf("cvs add -kb ");
