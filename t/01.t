@@ -2,9 +2,11 @@
 use strict;
 use warnings;
 use Test::More qw(no_plan);
+use lib '../lib';
 
 BEGIN {
-    require_ok("Simple.pm");
+    use_ok('Cvs::Simple');
+    #require_ok("Simple.pm");
 }
 
 my($cvs) = Cvs::Simple->new();
@@ -18,8 +20,10 @@ my(@methods) = qw(
     checkout    co
     commit  ci
     diff
+    external
     status
     update
+    _cmd
 );
 
 can_ok($cvs,@methods);

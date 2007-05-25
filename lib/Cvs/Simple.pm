@@ -59,6 +59,16 @@ sub external {
     return $self->{repos};
 }
 
+sub _cmd {
+    my($self) = shift;
+    my($type) = shift;
+
+    my($cmd) = $self->external  ?   sprintf("cvs %s %s ", $self->external,$type)
+                                :   sprintf("cvs %s ",    $type);
+
+    return $cmd;
+}
+
 sub add {
 #   Can only be called as:
 #    cvs add file1 [, .... , ]
@@ -67,8 +77,7 @@ sub add {
 
     return unless(@args);
 
-    my($cmd) = $self->external  ?   sprintf("cvs %s add ", $self->external)
-                                :   sprintf("cvs add ");
+    my($cmd) = $self->_cmd('add');
 
     if(@args) {
         $cmd .= join ' ' => @args;
@@ -85,8 +94,7 @@ sub add_bin {
 
     return unless (@args);
 
-    my($cmd) = $self->external  ?   sprintf("cvs %s add -kb", $self->external)
-                                :   sprintf("cvs add -kb ");
+    my($cmd) = $self->_cmd('add -kb');
 
     if(@args) {
         $cmd .= join ' ' => @args;
@@ -96,8 +104,21 @@ sub add_bin {
 }
 
 sub checkout {
+# Can be called as:
+#  cvs co module
+#  cvs co -r tag module
+#  Calling signature is checkout(tag,module) or checkout(module).
+    my($self) = shift;
+    my(@args) = @_;
 
+    return unless (@args && (scalar(@args)==2 || scalar(@args)==1));
 
+    my($cmd) = $self->_cmd('co');
+
+    $cmd    .= @args==2         ?   sprintf("-r %s %s", @args)
+                                :   sprintf("%s", @args);
+
+    return $self->cvs_cmd($cmd);
 }
 
 sub co {
@@ -114,9 +135,20 @@ sub ci {
 }
 
 sub diff {
+# Can be called as :
+# diff(file_or_dir)
+# diff(tag1,tag2,file_or_dir)
     my($self) = shift;
     my(@args) = @_;
 
+    return unless (@args && (scalar(@args)==1 || scalar(@args)==3));
+
+    my($cmd) = $self->_cmd('diff');
+
+    $cmd .=     @args==3    ?   sprintf("-r %s -r %s %s", @args)
+                            :   sprintf("%s", @args);
+
+    return $self->cvs_cmd($cmd);
 }
 
 sub status {
