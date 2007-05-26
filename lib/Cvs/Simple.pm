@@ -184,6 +184,9 @@ sub status {
     my(@args) = @_;
 
 }
+sub upd {
+    goto &update;
+}
 
 sub update {
 # update() -> update workspace (cvs -q update -d).

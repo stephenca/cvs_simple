@@ -13,10 +13,10 @@ my($cvs) = Cvs::Simple->new();
 isa_ok($cvs,'Cvs::Simple');
 
 my(@methods) = qw(
-	new
+    new
     backout
     callback
-	add	
+    add	
     add_bin
     checkout    co
     commit  ci
