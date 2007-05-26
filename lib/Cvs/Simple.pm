@@ -9,7 +9,20 @@ sub new {
     my($class) = shift;
     my($self) = {};
     bless $self, $class;
+    $self->_init(@_);
     return $self;
+}
+
+sub _init {
+    my($self) = shift;
+    my(%args) = @_;
+
+    if(exists $args{cvs_bin}) {
+        $self->cvs_bin($args{cvs_bin});
+    }
+    else {
+        $self->cvs_bin('/usr/bin/cvs');
+    }
 }
 
 sub callback {
@@ -24,6 +37,17 @@ sub callback {
     }
 
     return $self->{callback};
+}
+
+sub cvs_bin {
+    my($self) = shift;
+    my($bin)  = shift;
+
+    if($bin) {
+        $self->{cvs_bin} = $bin;
+    }
+
+    return $self->{cvs_bin};
 }
 
 sub cvs_cmd {
@@ -91,8 +115,11 @@ sub _cmd {
     my($self) = shift;
     my($type) = shift;
 
-    my($cmd) = $self->external  ?   sprintf("cvs %s %s ", $self->external,$type)
-                                :   sprintf("cvs %s ",    $type);
+    my($cvs)  = $self->cvs_bin;
+
+    my($cmd) = 
+        $self->external  ?   sprintf("%s -d %s %s ", $cvs,$self->external,$type)
+                         :   sprintf("%s %s ",       $cvs,$type);
 
     return $cmd;
 }

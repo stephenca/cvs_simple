@@ -8,6 +8,9 @@ use Cvs::Simple;
 my($cvsroot) = 'cvs';
 my($cvs) = Cvs::Simple->new(cvsroot=>$cvsroot);
 
+#my($repos) = '../repository';
+#qx[cvs_local init $repos];
+
 isa_ok($cvs,'Cvs::Simple');
 
 is($cvs->add(), undef);

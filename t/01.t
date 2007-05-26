@@ -20,12 +20,14 @@ my(@methods) = qw(
     add_bin
     checkout    co
     commit  ci
+    cvs_bin
+    cvs_cmd
     diff
     external
     merge
     status
     undo
-    update
+    update    upd
     up2date
     _cmd
 );
