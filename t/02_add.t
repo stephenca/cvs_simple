@@ -6,7 +6,7 @@ use lib '../lib';
 use Cvs::Simple;
 
 my($cvsroot) = 'cvs';
-my($cvs) = Cvs::Simple->new(cvsroot=>$cvsroot);
+my($cvs) = Cvs::Simple->new();
 
 #my($repos) = '../repository';
 #qx[cvs_local init $repos];
