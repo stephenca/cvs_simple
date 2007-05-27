@@ -6,6 +6,9 @@ use Test::More qw(no_plan);
 use lib '../lib';
 use Cvs::Simple;
 
+qx[./cleanup.sh];
+qx[./cvs.sh];
+
 my($cvsroot) = 'cvs';
 my($cvs) = Cvs::Simple->new();
 
@@ -17,7 +20,7 @@ qx[cvs import
 
 isa_ok($cvs,'Cvs::Simple');
 
-is($cvs->add(), undef);
+is($cvs->add(),     undef);
 is($cvs->add_bin(), undef);
 
 exit;
