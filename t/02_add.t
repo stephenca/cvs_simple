@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use Cwd;
 use Test::More qw(no_plan);
 use lib '../lib';
 use Cvs::Simple;
@@ -8,8 +9,11 @@ use Cvs::Simple;
 my($cvsroot) = 'cvs';
 my($cvs) = Cvs::Simple->new();
 
-#my($repos) = '../repository';
-#qx[cvs_local init $repos];
+my($cwd) = cwd;
+
+#my($repos) = "$cwd/repository";
+#qx[cvs init $repos];
+qx[cvs import 
 
 isa_ok($cvs,'Cvs::Simple');
 
