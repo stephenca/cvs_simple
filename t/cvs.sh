@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PWD=`pwd`
+PWD=$1
 TMPL="repository"
 REP="cvsdir"
 LOCAL=":local:$PWD/$REP"

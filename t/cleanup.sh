@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PWD=`pwd`
+PWD=$1
 REP="cvsdir"
 
 rm -rf $PWD/$REP
