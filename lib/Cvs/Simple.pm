@@ -54,7 +54,7 @@ sub cvs_cmd {
     my($self) = shift;
     my($cmd)  = shift;
 
-    return unless (defined($cmd) && $cmd);
+    croak "Syntax: cvs_cmd(cmd)" unless (defined($cmd) && $cmd);
 
     my($fh) = FileHandle->new("$cmd|");
     defined($fh) or croak "Failed to open $cmd:$!";
@@ -78,7 +78,8 @@ sub merge {
     my($self) = shift;
     my(@args) = @_;
 
-    return unless (@args && scalar(@args)==3);
+    croak "Syntax: merge(old_rev,new_rev,file)"
+        unless (@args && scalar(@args)==3);
 
     my($cmd) = $self->_cmd('update');
     $cmd .= sprintf("-j%s -j%s %s", @args);
@@ -96,7 +97,8 @@ sub backout {
     my($self) = shift;
     my(@args) = @_;
 
-    return unless (@args && scalar(@args)==3);
+    croak "Syntax: backout(current_rev,revert_rev,file)"
+        unless (@args && scalar(@args)==3);
 
     return $self->merge(@args);
 }
@@ -130,7 +132,7 @@ sub add {
     my($self) = shift;
     my(@args) = @_;
 
-    return unless(@args);
+    croak "Syntax: add(file1, ...)" unless(@args);
 
     my($cmd) = $self->_cmd('add');
 
@@ -147,7 +149,7 @@ sub add_bin {
     my($self) = shift;
     my(@args) = @_;
 
-    return unless (@args);
+    croak "Syntax: add_bin(file1, ...)" unless (@args);
 
     my($cmd) = $self->_cmd('add -kb');
 
@@ -166,7 +168,8 @@ sub checkout {
     my($self) = shift;
     my(@args) = @_;
 
-    return unless (@args && (scalar(@args)==2 || scalar(@args)==1));
+    croak "Syntax: co(tag,module) or co(module)"
+        unless (@args && (scalar(@args)==2 || scalar(@args)==1));
 
     my($cmd) = $self->_cmd('co');
 
@@ -196,7 +199,8 @@ sub diff {
     my($self) = shift;
     my(@args) = @_;
 
-    return unless (@args && (scalar(@args)==1 || scalar(@args)==3));
+    croak "Syntax: diff(file) or diff(tag1,tag2,file)"
+        unless (@args && (scalar(@args)==1 || scalar(@args)==3));
 
     my($cmd) = $self->_cmd('diff');
 
