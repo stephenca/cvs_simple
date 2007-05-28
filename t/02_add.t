@@ -14,9 +14,8 @@ my($cvs) = Cvs::Simple->new();
 
 my($cwd) = cwd;
 
-#my($repos) = "$cwd/repository";
-#qx[cvs init $repos];
-qx[cvs import 
+my($repos) = "$cwd/repository";
+qx[cvs -d $repos init];
 
 isa_ok($cvs,'Cvs::Simple');
 
