@@ -5,6 +5,7 @@ use Cwd;
 use Test::More qw(no_plan);
 use lib '../lib';
 use Cvs::Simple;
+use File::Copy;
 
 qx[./cleanup.sh];
 qx[./cvs.sh];
