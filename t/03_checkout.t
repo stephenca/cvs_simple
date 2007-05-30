@@ -10,12 +10,28 @@ my($cvs) = Cvs::Simple->new(cvsroot=>$cvsroot);
 
 isa_ok($cvs,'Cvs::Simple');
 
-is($cvs->checkout(), undef);
-is($cvs->checkout(qw(1 2 3)), undef);
+{
+local($@);
+eval{$cvs->checkout()};
+like($@,qr/Syntax: /);
+}
+{
+local($@);
+eval{$cvs->checkout(qw(1 2 3))};
+like($@,qr/Syntax: /);
+}
 
-is($cvs->co(), undef);
-is($cvs->co(qw(1 2 3)), undef);
+{
+local($@);
+eval{$cvs->co()};
+like($@,qr/Syntax: /);
+}
 
+{
+local($@);
+eval{$cvs->co(qw(1 2 3))};
+like($@,qr/Syntax: /);
+}
 
 exit;
 __END__

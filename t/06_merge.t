@@ -10,8 +10,16 @@ my($cvs) = Cvs::Simple->new(cvsroot=>$cvsroot);
 
 isa_ok($cvs,'Cvs::Simple');
 
-is($cvs->merge(), undef);
-is($cvs->merge(qw(1)), undef);
+{
+local($@);
+eval{$cvs->merge()};
+like($@,qr/Syntax: /);
+}
+{
+local($@);
+eval{$cvs->merge(qw(1))};
+like($@,qr/Syntax: /);
+}
 
 exit;
 __END__
