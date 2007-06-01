@@ -12,16 +12,21 @@ my($cvs) = Cvs::Simple->new();
 isa_ok($cvs,'Cvs::Simple');
 
 my($cwd) = cwd;
+eval{
+chdir("$cwd/t");
+};
 
 my($testdir) = '/tmp';
-$cwd .= '/t' unless($cwd=~m[/t\z]);
 
-qx[$cwd/cleanup.sh $testdir];
-qx[$cwd/cvs.sh     $testdir];
+qx[./cleanup.sh $testdir];
+qx[./cvs.sh     $testdir];
+qx[./02.sh];
 
 my($repos) = "$testdir/cvsdir";
-qx[cvs -d $repos co Add];
+$cvs->external($repos);
 File::Copy::copy('Add/add_test_01.txt', 'Add/add_test_02.txt');
+chdir('Add') or die $!;
+$cvs->add('add_test_02.txt');
 
 {
 local($@);
@@ -33,8 +38,6 @@ local($@);
 eval{$cvs->add_bin()};
 like($@, qr/Syntax:/);
 }
-
-$cvs->add('Add/add_test_02.txt');
 
 exit;
 __END__

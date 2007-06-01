@@ -1,6 +1,9 @@
 #!/bin/bash
 
-PWD=$1
+CVSDIR=$1
 REP="cvsdir"
+PWD=`pwd`
+cd $PWD/t
 
-rm -rf $PWD/$REP
+rm -rf $CVSDIR/$REP
+rm -rf Add/

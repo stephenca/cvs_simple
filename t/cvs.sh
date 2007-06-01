@@ -1,9 +1,12 @@
 #!/bin/bash
 
-PWD=$1
+CVSDIR=$1
 TMPL="repository"
 REP="cvsdir"
-LOCAL=":local:$PWD/$REP"
+LOCAL=":local:$CVSDIR/$REP"
+
+PWD=`pwd`
+cd $PWD/t
 
 echo $TMPL
 echo $LOCAL
