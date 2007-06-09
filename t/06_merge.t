@@ -5,8 +5,7 @@ use Test::More qw(no_plan);
 use lib '../lib';
 use Cvs::Simple;
 
-my($cvsroot) = 'cvs';
-my($cvs) = Cvs::Simple->new(cvsroot=>$cvsroot);
+my($cvs) = Cvs::Simple->new();
 
 isa_ok($cvs,'Cvs::Simple');
 
