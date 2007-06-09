@@ -5,6 +5,8 @@ use warnings;
 use Carp;
 use FileHandle;
 
+our $VERSION = 0.01;
+
 sub new {
     my($class) = shift;
     my($self) = {};
@@ -56,12 +58,12 @@ sub cvs_cmd {
 
     croak "Syntax: cvs_cmd(cmd)" unless (defined($cmd) && $cmd);
 
-    my($fh) = FileHandle->new("$cmd|");
+    my($fh) = FileHandle->new("$cmd 2>&1 |");
     defined($fh) or croak "Failed to open $cmd:$!";
 
     while(<$fh>) {
         if($self->callback) {
-            $self->callback->($_);
+            $self->callback->($cmd,$_);
         } 
         else {
             print STDOUT $_;
@@ -205,7 +207,7 @@ sub diff {
     my($cmd) = $self->_cmd('diff');
 
     $cmd .=     @args==3    ?   sprintf("-r %s -r %s %s", @args)
-                            :   sprintf("%s", @args);
+                            :   sprintf("%s"            , @args);
 
     return $self->cvs_cmd($cmd);
 }
@@ -246,5 +248,48 @@ sub up2date {
 
 1;
 __END__
+=head1 NAME
 
+Cvs::Simple - Perl extension for blah blah blah
 
+=head1 SYNOPSIS
+
+  use Cvs::Simple;
+    blah blah blah
+
+=head1 DESCRIPTION
+
+Stub documentation for Cvs::Simple, created by h2xs. It looks like the
+author of the extension was negligent enough to leave the stub
+unedited.
+
+Blah blah blah.
+
+=head2 EXPORT
+
+None by default.
+
+=head1 SEE ALSO
+
+Mention other useful documentation such as the documentation of
+related modules or operating system documentation (such as man pages
+in UNIX), or any relevant external documentation such as RFCs or
+standards.
+
+If you have a mailing list set up for your module, mention it here.
+
+If you have a web site set up for your module, mention it here.
+
+=head1 AUTHOR
+
+Stephen Cardie, E<lt>stephenca@ls26.netE<gt>
+
+=head1 COPYRIGHT AND LICENSE
+
+Copyright (C) 2007 by Stephen Cardie
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself, either Perl version 5.8.8 or,
+at your option, any later version of Perl 5 you may have available.
+
+=cut
