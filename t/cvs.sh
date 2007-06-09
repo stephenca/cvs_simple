@@ -5,9 +5,6 @@ TMPL="repository"
 REP="cvsdir"
 LOCAL=":local:$CVSDIR/$REP"
 
-PWD=`pwd`
-cd $PWD/t
-
 echo $TMPL
 echo $LOCAL
 
