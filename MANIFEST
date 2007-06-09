@@ -1,0 +1,15 @@
+Changes
+Makefile.PL
+MANIFEST
+README
+lib/Cvs/Simple.pm
+repository/Add/add_test_01.txt
+t/01.t
+t/02_add.t
+t/03_checkout.t
+t/04_diff.t
+t/05_backout.t
+t/06_merge.t
+t/cleanup.sh
+t/cvs.sh
+

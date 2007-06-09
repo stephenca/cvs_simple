@@ -1,0 +1,6 @@
+Revision history for Perl extension Cvs::Simple.
+
+0.01  Sat Jun  9 21:56:32 2007
+	- original version; created by h2xs 1.23 with options
+		-AX -n Cvs::Simple
+
