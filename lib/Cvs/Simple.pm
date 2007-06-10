@@ -25,6 +25,14 @@ sub _init {
     else {
         $self->cvs_bin('/usr/bin/cvs');
     }
+
+    if(exists $args{external}) {
+        $self->external($args{external});
+    }
+
+    if(exists $args{callback}) {
+        $self->callback($args{callback});
+    }
 }
 
 sub callback {
