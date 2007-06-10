@@ -11,6 +11,8 @@ t/03_checkout.t
 t/04_diff.t
 t/05_backout.t
 t/06_merge.t
+t/07_commit.t
+t/99_cleanup.t
 t/cleanup.sh
 t/cvs.sh
 

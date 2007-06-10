@@ -6,6 +6,7 @@ WriteMakefile(
     NAME              => 'Cvs::Simple',
     VERSION_FROM      => 'lib/Cvs/Simple.pm', # finds $VERSION
     PREREQ_PM => {
+            'Cwd'        => 0,
             'Test::More' => 0,
     },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
