@@ -214,7 +214,7 @@ sub commit {
         croak "Syntax: commit([rev],[\@filelist])"
             unless (UNIVERSAL::isa($args[1], 'ARRAY'));
         my($pattern) = join '' => '-r %s ', _pattern($args[1]);
-        $cmd .= sprintf($pattern, @args);
+        $cmd .= sprintf($pattern, $args[0], @{$args[1]});
         return $self->cvs_cmd($cmd);
     }
     elsif(@args==1) { # 'cvs commit -m "" -r TAG' or 
