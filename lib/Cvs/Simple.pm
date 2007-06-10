@@ -185,9 +185,47 @@ sub co {
     goto &checkout;
 }
 
+sub _pattern {
+    return join '' => ('%s ' x @{$_[0]});
+}
+
 sub commit {
+# Can be called as :
+# commit()
+# commit([file_list])
+# commit(tag1)
+# commit(tag1, [file_list])
     my($self) = shift;
     my(@args) = @_;
+
+    my($cmd) = $self->_cmd('commit -m ""');
+    if(scalar(@args)==0) { # 'cvs commit -m ""'
+        return $self->cvs_cmd($cmd);
+    }
+    elsif(@args==2) { # 'cvs commit -m "" -r TAG file(s)'
+        croak "Syntax: commit([rev],[\@filelist])"
+            unless (UNIVERSAL::isa($args[1]), 'ARRAY');
+        my($pattern) = join '' => '-r%s ', _pattern($args[1]);
+        $cmd .= sprintf($pattern, @args);
+        return $self->cvs_cmd($cmd);
+    }
+    elsif(@args==1) { # 'cvs commit -m "" -rTAG' or 
+                      # 'cvs commit -m "" file(s)'
+        my($pattern);
+        if(UNIVERSAL::isa($args[0], 'ARRAY')) {
+            $pattern = sprintf(_pattern($args[0]), @{$args[0]});
+        }
+        else {
+            $pattern = sprintf('-r%s', $args[0]);
+        }
+
+        $cmd .= $pattern;
+
+        return $self->cvs_cmd($cmd);
+    }
+    else { # Anything else is an error
+        croak "Syntax: commit([rev],[\@filelist])";
+    }
 }
 
 sub ci {
