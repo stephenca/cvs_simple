@@ -1,6 +1,7 @@
 Changes
 Makefile.PL
 MANIFEST
+META.yml
 README
 lib/Cvs/Simple.pm
 repository/Add/add_test_01.txt
