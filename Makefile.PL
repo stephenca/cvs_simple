@@ -6,7 +6,6 @@ WriteMakefile(
     NAME              => 'Cvs::Simple',
     VERSION_FROM      => 'lib/Cvs/Simple.pm', # finds $VERSION
     PREREQ_PM => {
-            'Cwd'        => 0,
             'File::Copy' => 0,
             'Test::More' => 0,
     },
