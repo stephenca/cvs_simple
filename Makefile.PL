@@ -1,4 +1,4 @@
-use 5.008008;
+use 5;
 use ExtUtils::MakeMaker;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.
@@ -11,5 +11,5 @@ WriteMakefile(
     },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Cvs/Simple.pm', # retrieve abstract from module
-       AUTHOR         => 'Knoppix User <knoppix@>') : ()),
+       AUTHOR         => 'Stephen Cardie <stephenca@ls26.net>') : ()),
 );
