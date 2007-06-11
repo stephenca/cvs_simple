@@ -8,9 +8,9 @@ LOCAL=":local:$CVSDIR/$REP"
 echo $TMPL
 echo $LOCAL
 
-cvs -d $LOCAL init 
+$CVS_BIN -d $LOCAL init 
 cd $PWD/../$TMPL/Add
-cvs -d $LOCAL import -m "" Add V1 E2
+$CVS_BIN -d $LOCAL import -m "" Add V1 E2
 
 cd $PWD
 

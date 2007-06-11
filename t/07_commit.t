@@ -6,6 +6,8 @@ use Cvs::Simple;
 use Cwd;
 
 my($cvs) = Cvs::Simple->new();
+$cvs->cvs_bin($ENV{CVS_BIN});
+
 isa_ok($cvs,'Cvs::Simple');
 
 my($cwd) = cwd;

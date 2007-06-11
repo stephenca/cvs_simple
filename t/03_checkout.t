@@ -6,7 +6,6 @@ use lib '../lib';
 use Cvs::Simple;
 
 my($cvs) = Cvs::Simple->new();
-
 isa_ok($cvs,'Cvs::Simple');
 
 {
