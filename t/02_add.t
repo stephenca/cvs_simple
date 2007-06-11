@@ -25,7 +25,11 @@ my($commit_callback) = sub {
 my($cvs) = Cvs::Simple->new();
 isa_ok($cvs,'Cvs::Simple');
 $cvs->cvs_bin($ENV{CVS_BIN});
-$cvs->callback($add_callback);
+
+# Set our callbacks.  Note that the 'add' callback
+#  is actuall an 'update'.
+$cvs->callback(update   => $add_callback   );
+$cvs->callback(commit   => $commit_callback);
 
 my($cwd) = cwd;
 unless ($cwd=~m{/t\z}) {
@@ -53,7 +57,6 @@ $cvs->up2date;
 is($add_ok,1);
 
 diag('Simple commit.');
-$cvs->callback($commit_callback);
 $cvs->commit;
 is($commit_ok,1);
 

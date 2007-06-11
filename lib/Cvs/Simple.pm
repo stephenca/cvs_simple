@@ -7,6 +7,23 @@ use FileHandle;
 
 our $VERSION = 0.01;
 
+my(%PERMITTED) = (
+    'All'  => '',
+    'add'  => '',
+    'checkout'  => '',
+    'co'  => '',
+    'commit'  => '',
+    'ci'  => '',
+    'update'  => '',
+    'diff'  => '',
+    'status' => '',
+);
+sub PERM_REQ () {
+    my($patt) = join '|' => keys %PERMITTED;
+    return qr/$patt/;
+}
+my($PERM_REQ) = PERM_REQ;
+
 sub new {
     my($class) = shift;
     my($self) = {};
@@ -37,16 +54,45 @@ sub _init {
 
 sub callback {
     my($self) = shift;
+    my($hook) = shift;
     my($func) = shift;
+
+    # If 'hook' is not supplied, callback is global, i.e. apply to all.
+    $hook ||= 'All';
+
+    unless(exists $PERMITTED{$hook}) {
+        croak "Invalid hook type in callback: $hook.";
+    }
 
     if(defined($func)) {
         UNIVERSAL::isa(($func), 'CODE') or do {
             croak "Argument supplied to callback() should be a coderef.";
         };
-        $self->{callback} = $func;
+        $self->{callback}{$hook} = $func;
     }
 
-    return $self->{callback};
+    if(exists $self->{callback}{$hook}) {
+        return $self->{callback}{$hook};
+    }
+    else {
+        return;
+    }
+}
+
+sub unset_callback {
+    my($self) = shift;
+    my($hook) = shift;
+
+    unless(exists $PERMITTED{$hook}) {
+        croak "Invalid hook type in unset_callback: $hook.";
+    }
+
+    if(exists $self->{callback}{$hook}) {
+        return delete $self->{callback}{$hook};
+    }
+    else {
+        return;
+    }
 }
 
 sub cvs_bin {
@@ -66,15 +112,27 @@ sub cvs_cmd {
 
     croak "Syntax: cvs_cmd(cmd)" unless (defined($cmd) && $cmd);
 
+    my($hook);
+    if(($cmd)=~/\b($PERM_REQ)\b/) {
+        $hook = $1;
+    }
+
     my($fh) = FileHandle->new("$cmd 2>&1 |");
     defined($fh) or croak "Failed to open $cmd:$!";
 
     while(<$fh>) {
-        if($self->callback) {
-            $self->callback->($cmd,$_);
-        } 
+        if(defined($hook)) {
+            if($self->callback($hook)) {
+                $self->callback($hook)->($cmd,$_);
+            } 
+        }
         else {
-            print STDOUT $_;
+            if($self->callback('All')) {
+                $self->callback('All')->($cmd, $_);
+            }
+            else {
+                print STDOUT $_;
+            }
         }
     }
 

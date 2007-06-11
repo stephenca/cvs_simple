@@ -26,6 +26,7 @@ my(@methods) = qw(
     merge
     status
     undo
+    unset_callback
     update    upd
     up2date
     _cmd
