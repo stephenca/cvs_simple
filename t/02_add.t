@@ -27,7 +27,7 @@ isa_ok($cvs,'Cvs::Simple');
 $cvs->cvs_bin($ENV{CVS_BIN});
 
 # Set our callbacks.  Note that the 'add' callback
-#  is actuall an 'update'.
+#  is actually an 'update'.
 $cvs->callback(update   => $add_callback   );
 $cvs->callback(commit   => $commit_callback);
 
