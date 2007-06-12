@@ -354,20 +354,30 @@ sub up2date {
 __END__
 =head1 NAME
 
-Cvs::Simple - Perl extension for blah blah blah
+Cvs::Simple - Perl interface to cvs
 
 =head1 SYNOPSIS
 
   use Cvs::Simple;
-    blah blah blah
+
+  my($cvs) = Cvs::Simple->new();
+  $cvs->add('file.txt');
+  $cvs->commit();
+
 
 =head1 DESCRIPTION
 
-Stub documentation for Cvs::Simple, created by h2xs. It looks like the
-author of the extension was negligent enough to leave the stub
-unedited.
+Cvs::Simple is an attempt to provide an easy-to-use wrapper so that cvs
+commands can be executed within a Perl program, which the programmer having to
+wade through the (many) cvs command options.
 
-Blah blah blah.
+The methods provided follow closely the recipes list in "Pragmatic Version
+Control with CVS" by Dave Thomas and Andy Hunt (see
+http://www.pragmaticprogrammer.com/starter_kit/vcc/index.html).
+
+=head2 METHODS
+
+
 
 =head2 EXPORT
 
@@ -375,14 +385,7 @@ None by default.
 
 =head1 SEE ALSO
 
-Mention other useful documentation such as the documentation of
-related modules or operating system documentation (such as man pages
-in UNIX), or any relevant external documentation such as RFCs or
-standards.
-
-If you have a mailing list set up for your module, mention it here.
-
-If you have a web site set up for your module, mention it here.
+cvs(1)
 
 =head1 AUTHOR
 
