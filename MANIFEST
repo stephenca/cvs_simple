@@ -3,6 +3,7 @@ Makefile.PL
 MANIFEST
 META.yml
 README
+cvsup2date
 lib/Cvs/Simple.pm
 repository/Add/add_test_01.txt
 t/01.t
