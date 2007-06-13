@@ -352,6 +352,8 @@ sub up2date {
 
 1;
 __END__
+=pod
+
 =head1 NAME
 
 Cvs::Simple - Perl interface to cvs
@@ -373,7 +375,7 @@ wade through the (many) cvs global and command-specific options.
 
 The methods provided follow closely the recipes list in "Pragmatic Version
 Control with CVS" by Dave Thomas and Andy Hunt (see
-http://www.pragmaticprogrammer.com/starter_kit/vcc/index.html).
+L<http://www.pragmaticprogrammer.com/starter_kit/vcc/index.html>).
 
 =head2 UTILITY METHODS
 
@@ -381,37 +383,61 @@ http://www.pragmaticprogrammer.com/starter_kit/vcc/index.html).
 
 =item new ( [ CONFIG_ITEMS ] )
 
-  Creates an instance of Cvs::Simple.
+Creates an instance of Cvs::Simple.
 
-  CONFIG_ITEMS is a hash of configuration items.  Recognised configuration items are:
+CONFIG_ITEMS is a hash of configuration items.  Recognised configuration items are:
 
 =over 8
 
-=item * 
-cvs_bin
+=item cvs_bin
 
-=item * 
-external
+=item external
 
-=item * 
-callback
+=item callback
 
 =back
 
 See the method descriptions below for details of these.   If none are
 specified, CVS::Simple will choose some sensible defaults.
 
-=item callback ( )
+=item callback ( CMD, CODEREF )
 
-=item unset_callback ( )
+Specify a function pointed to by CODEREF to be executed for every line output
+by CMD.  Permitted values of CMD are C<All> (executed on every line of
+output), C<add>, C<commit>, C<checkout>, C<diff>, C<update>.
 
-=item cvs_bin ( ) 
+cvs_cmd passes two arguments to callbacks:  the actual command called, and the
+line returned by CVS.
+
+See the tests for examples of callbacks.
+
+=item 
+
+=item unset_callback ( CMD )
+
+Remove the callback set for CMD.
+
+=item cvs_bin ( PATH ) 
+
+Specifies the location and name of the CVS binary.  Default to
+C</usr/bin/cvs>.
 
 =item cvs_cmd ( )
 
+cvs_cmd() does the actual work of calling the equivalent CVS command.  If any
+callbacks have been set, they will be executed for every line received from
+the command.  If no callbacks have been set, all output is to STDOUT.
+
+=item external( REPOSITORY )
+
+Specify an "external" repository.  This can be a genuinely remote
+repository in C<:ext:user@repos.tld:/path/to/cvsroot> format, or an
+alternative repository on the local host.  This will be passed to the C<-d>
+CVS global option.
+
 =head2 CVS METHODS 
 
-=item add ( FILE1, [ .... , FILEx ] )
+=item add     ( FILE1, [ .... , FILEx ] )
 
 =item add_bin ( FILE1, [ .... , FILEx ] )
 
@@ -432,6 +458,10 @@ or C<cvs add -kb file1, ...> in the case of add_bin().
 
 =item commit ( TAG, FILELIST_ARRAYREF )
 
+These are the equivalent of C<cvs commit>, C<cvs commit file1, file2, ...., 
+fileN>, C<cvs commit -r TAG> and C<cvs commit -r TAG file1, file2, ....,
+fileN> respectively.
+
 Note that ci() can be used as an alias for commit().
 
 =item diff ( FILE_OR_DIR )
@@ -445,39 +475,55 @@ diff -c -rTAG1 -rTAG2 FILE_OR_DIR>.
 
 =item merge ( OLD_REV, NEW_REV, FILENAME )
 
-This is the equivalent of C<cvs update -jOLD_REV -jNEW_REV FILENAME>.
+This is the equivalent of C<cvs update -jOLD_REV -jNEW_REV FILENAME>.  Note
+for callback purposes that this is actually an update().
 
 =item undo ( CURRENT_REV, REVERT_REV, FILENAME )
 
+Reverts from CURRENT_REV to REVERT_REV.  Equivalent to C<cvs update
+-jCURRENT_REV -jREVERT_REV FILENAME>.
+
 Note that backout() can be used as an alias for undo().
 
-=item external
-
-Specify an "external" repository.  This can be a genuinely remote
-repository in C<:ext:user@repos.tld:/path/to/cvsroot> format, or an
-alternative repository on the local host.  This will be passed to the C<-d>
-CVS global option.
+Note that for callback purposes this is actually an update().
 
 =item status 
 
-  Not implemented yet: method is a stub.
-
-=item upd ( )
+Not implemented yet: method is a stub.
 
 =item update ( )
+=item update ( FILE1, [ ...., FILEx ] );
+
+Equivalent to C<cvs -q update -d> and C<cvs -d update file1, ..., filex>.
+
+Note that updates to a specific revision (C<-r>) and sticky-tag resets (C<-A>) are not currently supported.
+
+Note that upd() is an alias for update().
 
 =item up2date ( )
 
-Short-hand for 'cvs -nq update -d'.
+Short-hand for C<cvs -nq update -d>.
 
 
 =head2 EXPORT
 
 None by default.
 
+=head1 LIMITATIONS AND CAVEATS
+
+=item 1. Note that C<Cvs::Simple> carries out no input validation; everything is
+passed on to CVS.
+
+=item 2. The C<cvs_cmd> method is quite simplistic; it's basically a pipe from
+the equivalent CVS command line (with STDERR redirected).  If a more
+sophisticated treatment, over-ride C<cvs_cmd>, perhaps with something based on
+C<IPC::Run> (as the L<Cvs> package does).
+
+
+
 =head1 SEE ALSO
 
-cvs(1)
+cvs(1), L<Cvs>
 
 =head1 AUTHOR
 
