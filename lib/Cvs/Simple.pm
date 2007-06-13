@@ -308,7 +308,7 @@ sub diff {
     croak "Syntax: diff(file) or diff(tag1,tag2,file)"
         unless (@args && (scalar(@args)==1 || scalar(@args)==3));
 
-    my($cmd) = $self->_cmd('diff');
+    my($cmd) = $self->_cmd('diff -c');
 
     $cmd .=     @args==3    ?   sprintf("-r %s -r %s %s", @args)
                             :   sprintf("%s"            , @args);
@@ -367,16 +367,108 @@ Cvs::Simple - Perl interface to cvs
 
 =head1 DESCRIPTION
 
-Cvs::Simple is an attempt to provide an easy-to-use wrapper so that cvs
-commands can be executed within a Perl program, which the programmer having to
-wade through the (many) cvs command options.
+C<Cvs::Simple> is an attempt to provide an easy-to-use wrapper that allows cvs
+commands to be executed from within a Perl program, without the programmer having to
+wade through the (many) cvs global and command-specific options.
 
 The methods provided follow closely the recipes list in "Pragmatic Version
 Control with CVS" by Dave Thomas and Andy Hunt (see
 http://www.pragmaticprogrammer.com/starter_kit/vcc/index.html).
 
-=head2 METHODS
+=head2 UTILITY METHODS
 
+=over 4
+
+=item new ( [ CONFIG_ITEMS ] )
+
+  Creates an instance of Cvs::Simple.
+
+  CONFIG_ITEMS is a hash of configuration items.  Recognised configuration items are:
+
+=over 8
+
+=item * 
+cvs_bin
+
+=item * 
+external
+
+=item * 
+callback
+
+=back
+
+See the method descriptions below for details of these.   If none are
+specified, CVS::Simple will choose some sensible defaults.
+
+=item callback ( )
+
+=item unset_callback ( )
+
+=item cvs_bin ( ) 
+
+=item cvs_cmd ( )
+
+=head2 CVS METHODS 
+
+=item add ( FILE1, [ .... , FILEx ] )
+
+=item add_bin ( FILE1, [ .... , FILEx ] )
+
+Add a file or files to the repository; equivalent to C<cvs add file1, ....>,
+or C<cvs add -kb file1, ...> in the case of add_bin().
+
+=item checkout ( MODULE )
+
+=item checkout ( TAG, MODULE )
+
+  Note that co() can be used as an alias for checkout().
+
+=item commit ( )
+
+=item commit ( FILELIST_ARRAYREF )
+
+=item commit ( TAG )
+
+=item commit ( TAG, FILELIST_ARRAYREF )
+
+Note that ci() can be used as an alias for commit().
+
+=item diff ( FILE_OR_DIR )
+
+=item diff ( TAG1, TAG2, FILE_OR_DIR )
+
+FILE_OR_DIR is a single file, or a directory, in the sandbox.
+
+Performs context diff: equivalent to C<cvs diff -c FILE_OR_DIR> or C<cvs
+diff -c -rTAG1 -rTAG2 FILE_OR_DIR>.
+
+=item merge ( OLD_REV, NEW_REV, FILENAME )
+
+This is the equivalent of C<cvs update -jOLD_REV -jNEW_REV FILENAME>.
+
+=item undo ( CURRENT_REV, REVERT_REV, FILENAME )
+
+Note that backout() can be used as an alias for undo().
+
+=item external
+
+Specify an "external" repository.  This can be a genuinely remote
+repository in C<:ext:user@repos.tld:/path/to/cvsroot> format, or an
+alternative repository on the local host.  This will be passed to the C<-d>
+CVS global option.
+
+=item status 
+
+  Not implemented yet: method is a stub.
+
+=item upd ( )
+
+=item update ( )
+
+=item up2date ( )
+
+Short-hand for 'cvs -nq update -d'.
 
 
 =head2 EXPORT
