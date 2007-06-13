@@ -6,7 +6,7 @@ use Test::More qw(no_plan);
 use Cvs::Simple;
 use File::Copy;
 
-my($add_ok,$commit_ok) = (0,0);
+my($add_ok,$commit_ok,$update_ok) = (0,0,0);
 my($add_callback) = sub {
     return unless ($_[0]=~/\bupdate\b/);
     local($_) = $_[1];
@@ -21,6 +21,11 @@ my($commit_callback) = sub {
     $arg=~/revision: \d\.\d/ and ++$commit_ok;
 };
 
+my($update_callback) = sub {
+    my($cmd,$arg) = @_;
+    return unless ($cmd =~ /\bupdate\b/);
+    $arg=~/U add_test_0[34].txt/ and ++$update_ok;
+};
 
 my($cvs) = Cvs::Simple->new();
 isa_ok($cvs,'Cvs::Simple');
@@ -77,6 +82,20 @@ is($commit_ok,3);
 diag('Force revision on all.');
 $cvs->commit('3.0');
 is($commit_ok,7);
+
+# Remove a file and do an update.
+unlink('add_test_04.txt');
+$cvs->unset_callback('update');
+$cvs->callback(update => $update_callback);
+$cvs->update;
+
+is($update_ok,1);
+
+unlink('add_test_03.txt');
+$cvs->update('add_test_03.txt');
+
+is($update_ok,2);
+
 {
 local($@);
 eval{$cvs->add()};
