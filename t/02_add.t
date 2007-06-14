@@ -34,7 +34,6 @@ my($update_callback) = sub {
 
 my($cvs) = Cvs::Simple->new();
 isa_ok($cvs,'Cvs::Simple');
-$cvs->cvs_bin($ENV{CVS_BIN});
 
 # Set our callbacks.  Note that the 'add' callback
 #  is actually an 'update'.
@@ -48,9 +47,9 @@ unless ($cwd=~m{/t\z}) {
 }
 
 my($testdir) = '/tmp';
-
-qx[$cwd/cleanup.sh $testdir >>/dev/null 2>&1];
-qx[$cwd/cvs.sh     $testdir >>/dev/null 2>&1];
+my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
+qx[$cwd/cleanup.sh          $testdir >>/dev/null 2>&1];
+qx[$cwd/cvs.sh     $cvs_bin $testdir >>/dev/null 2>&1];
 
 my($repos) = "$testdir/cvsdir";
 $cvs->external($repos);

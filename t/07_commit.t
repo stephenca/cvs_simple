@@ -17,14 +17,15 @@ unless ($cwd=~m{/t\z}) {
 }
 
 my($testdir) = '/tmp';
-
-qx[$cwd/cleanup.sh $testdir];
-qx[$cwd/cvs.sh     $testdir];
+my($cvsbin)  = Cvs::Simple::Config::CVS_BIN;
+qx[$cwd/cleanup.sh         $testdir];
+qx[$cwd/cvs.sh     $cvsbin $testdir];
 
 my($repos) = "$testdir/cvsdir";
 $cvs->external($repos);
 
-
+{
+my($cvs) = Cvs::Simple->new();
 {
 local($@);
 eval{$cvs->commit(qw(1 2 3 4 5))};
@@ -45,6 +46,7 @@ like($@,qr/Syntax: /, 'Too many args');
 local($@);
 eval{$cvs->ci(1, 'filename')};
 like($@,qr/Syntax: /);
+}
 }
 
 exit;
