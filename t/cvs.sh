@@ -1,16 +1,17 @@
 #!/bin/bash
 
-CVSDIR=$1
+CVSBIN=$1
+CVSDIR=$2
 TMPL="repository"
 REP="cvsdir"
 LOCAL=":local:$CVSDIR/$REP"
 
-echo $TMPL
+echo $CVSBIN
 echo $LOCAL
 
-$CVS_BIN -d $LOCAL init 
+$CVSBIN -d $LOCAL init 
 cd $PWD/../$TMPL/Add
-$CVS_BIN -d $LOCAL import -m "" Add V1 E2
+$CVSBIN -d $LOCAL import -m "" Add V1 E2
 
 cd $PWD
 
