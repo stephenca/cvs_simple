@@ -5,6 +5,7 @@ META.yml
 README
 cvsup2date
 lib/Cvs/Simple.pm
+lib/Cvs/Simple/Config.pm
 repository/Add/add_test_01.txt
 t/01.t
 t/02_add.t
