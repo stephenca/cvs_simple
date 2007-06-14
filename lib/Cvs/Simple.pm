@@ -375,9 +375,30 @@ Cvs::Simple - Perl interface to cvs
 
   use Cvs::Simple;
 
+  # Basic usage:
+  chdir('/path/to/sandbox')
+    or die "Failed to chdir to sandbox:$!";
   my($cvs) = Cvs::Simple->new();
   $cvs->add('file.txt');
   $cvs->commit();
+
+  # Callback
+
+  my($commit_callback);
+  my($commit) = 0;
+  {
+    my($file) = 'file.txt';
+    ($commit_callback) = sub {
+      my($cmd,$arg) = @_;
+      if($arg=~/Checking in $file;/) { ++$commit }
+    };
+  }
+  my($cvs) = Cvs::Simple->new();
+  $cvs->callback(commit => $commit_callback);
+  $cvs->add('file.txt');
+  $cvs->commit();
+  croak "Failed to commit file.txt" unless($commit);
+  $cvs->unset_callback('commit');
 
 
 =head1 DESCRIPTION
@@ -451,7 +472,11 @@ repository in C<:ext:user@repos.tld:/path/to/cvsroot> format, or an
 alternative repository on the local host.  This will be passed to the C<-d>
 CVS global option.
 
+=back
+
 =head2 CVS METHODS 
+
+=over 4
 
 =item add     ( FILE1, [ .... , FILEx ] )
 
@@ -507,6 +532,7 @@ Note that for callback purposes this is actually an update().
 Not implemented yet: method is a stub.
 
 =item update ( )
+
 =item update ( FILE1, [ ...., FILEx ] );
 
 Equivalent to C<cvs -q update -d> and C<cvs -d update file1, ..., filex>.
@@ -519,6 +545,7 @@ Note that upd() is an alias for update().
 
 Short-hand for C<cvs -nq update -d>.
 
+=back
 
 =head2 EXPORT
 
@@ -526,19 +553,32 @@ None by default.
 
 =head1 LIMITATIONS AND CAVEATS
 
+=over 4
+
 =item 1. Note that C<Cvs::Simple> carries out no input validation; everything is
-passed on to CVS.
+passed on to CVS.  Similarly, the caller will receive no response on the
+success (or otherwise) of the transaction, unless appropriate callbacks have
+been set.
 
 =item 2. The C<cvs_cmd> method is quite simplistic; it's basically a pipe from
 the equivalent CVS command line (with STDERR redirected).  If a more
 sophisticated treatment, over-ride C<cvs_cmd>, perhaps with something based on
 C<IPC::Run> (as the L<Cvs> package does).
 
+=item 3. This version of C<Cvs::Simple> has been developed against cvs version
+1.11.19.  Command syntax may differ in other versions of cvs, and
+C<Cvs::Simple> method calls may fail in unpredictable ways if other versions
+are used.   Cross-version compatibiility is something I intend to address in a
+future version.
 
+=item 4. The C<diff>, C<merge>, and C<undo> methods lack proper tests.  More
+tests are required generally.
+
+=back
 
 =head1 SEE ALSO
 
-cvs(1), L<Cvs>
+cvs(1), L<Cvs>, L<VCS::Cvs>
 
 =head1 AUTHOR
 
