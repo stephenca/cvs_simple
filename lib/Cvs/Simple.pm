@@ -11,9 +11,7 @@ my(%PERMITTED) = (
     'All'  => '',
     'add'  => '',
     'checkout'  => '',
-    'co'  => '',
     'commit'  => '',
-    'ci'  => '',
     'update'  => '',
     'diff'  => '',
     'status' => '',
@@ -149,7 +147,7 @@ sub merge {
     croak "Syntax: merge(old_rev,new_rev,file)"
         unless (@args && scalar(@args)==3);
 
-    my($cmd) = $self->_cmd('update');
+    my($cmd) = $self->_cmd('-q update');
     $cmd .= sprintf("-j%s -j%s %s", @args);
 
     return $self->cvs_cmd($cmd);
@@ -165,8 +163,12 @@ sub backout {
     my($self) = shift;
     my(@args) = @_;
 
-    croak "Syntax: backout(current_rev,revert_rev,file)"
-        unless (@args && scalar(@args)==3);
+    unless (@args && scalar(@args)==3) {
+        croak <<SYN;
+Syntax: backout(current_rev,revert_rev,file)
+        undo   (current_rev,revert_rev,file)
+SYN
+    }
 
     return $self->merge(@args);
 }
@@ -236,8 +238,15 @@ sub checkout {
     my($self) = shift;
     my(@args) = @_;
 
-    croak "Syntax: co(tag,module) or co(module)"
-        unless (@args && (scalar(@args)==2 || scalar(@args)==1));
+    unless (@args && (scalar(@args)==2 || scalar(@args)==1)) {
+    croak <<SYN;
+Syntax: co(tag)
+        co(module)
+        checkout(tag)
+        checkout(module)
+SYN
+
+    }
 
     my($cmd) = $self->_cmd('co');
 
@@ -290,7 +299,11 @@ sub commit {
         return $self->cvs_cmd($cmd);
     }
     else { # Anything else is an error
-        croak "Syntax: commit([rev],[\@filelist])";
+        croak <<SYN
+Syntax: commit([rev],[\@filelist])
+        ci    ([rev],[\@filelist])
+SYN
+
     }
 }
 
@@ -458,8 +471,7 @@ or C<cvs add -kb file1, ...> in the case of add_bin().
 
 =item commit ( TAG, FILELIST_ARRAYREF )
 
-These are the equivalent of C<cvs commit>, C<cvs commit file1, file2, ...., 
-fileN>, C<cvs commit -r TAG> and C<cvs commit -r TAG file1, file2, ....,
+These are the equivalent of C<cvs commit -m "">, C<cvs commit -m "" file1, file2, ...., fileN>, C<cvs commit -r TAG -m ""> and C<cvs commit -r TAG -m "" file1, file2, ....,
 fileN> respectively.
 
 Note that ci() can be used as an alias for commit().
@@ -475,7 +487,7 @@ diff -c -rTAG1 -rTAG2 FILE_OR_DIR>.
 
 =item merge ( OLD_REV, NEW_REV, FILENAME )
 
-This is the equivalent of C<cvs update -jOLD_REV -jNEW_REV FILENAME>.  Note
+This is the equivalent of C<cvs -q update -jOLD_REV -jNEW_REV FILENAME>.  Note
 for callback purposes that this is actually an update().
 
 =item undo ( CURRENT_REV, REVERT_REV, FILENAME )
