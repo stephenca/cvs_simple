@@ -6,7 +6,7 @@ use Test::More qw(no_plan);
 use Cvs::Simple;
 use File::Copy;
 
-my($add_ok,$commit_ok,$update_ok) = (0,0,0);
+my($add_ok,$commit_ok,$update_ok,$merge_ok) = (0,0,0,0);
 my($add_callback) = sub {
     return unless ($_[0]=~/\bupdate\b/);
     local($_) = $_[1];
@@ -24,7 +24,12 @@ my($commit_callback) = sub {
 my($update_callback) = sub {
     my($cmd,$arg) = @_;
     return unless ($cmd =~ /\bupdate\b/);
-    $arg=~/U add_test_0[34].txt/ and ++$update_ok;
+    if($cmd=~/\-j/) {
+        
+    }
+    else {
+        $arg=~/U add_test_0[34].txt/ and ++$update_ok;
+    }
 };
 
 my($cvs) = Cvs::Simple->new();
