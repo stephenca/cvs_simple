@@ -416,8 +416,11 @@ specified, CVS::Simple will choose some sensible defaults.
 =item callback ( CMD, CODEREF )
 
 Specify a function pointed to by CODEREF to be executed for every line output
-by CMD.  Permitted values of CMD are C<All> (executed on every line of
-output), C<add>, C<commit>, C<checkout>, C<diff>, C<update>.
+by CMD.  
+
+Permitted values of CMD are C<All> (executed on every line of
+output), C<add>, C<commit>, C<checkout>, C<diff>, C<update>.  CMD is also
+permitted to be undef, in which case, it will be assumed to be C<All>.
 
 cvs_cmd passes two arguments to callbacks:  the actual command called, and the
 line returned by CVS.
