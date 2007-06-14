@@ -3,6 +3,7 @@ package Cvs::Simple;
 use strict;
 use warnings;
 use Carp;
+use Cvs::Simple::Config;
 use FileHandle;
 
 our $VERSION = 0.01;
@@ -38,11 +39,14 @@ sub _init {
         $self->cvs_bin($args{cvs_bin});
     }
     else {
-        $self->cvs_bin('/usr/bin/cvs');
+        $self->cvs_bin(Cvs::Simple::Config::CVS_BIN);
     }
 
     if(exists $args{external}) {
         $self->external($args{external});
+    }
+    elsif (Cvs::Simple::Config::EXTERNAL) {
+        $self->external(Cvs::Simple::Config::EXTERNAL);
     }
 
     if(exists $args{callback}) {
