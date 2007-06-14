@@ -14,6 +14,7 @@ t/05_backout.t
 t/06_merge.t
 t/07_commit.t
 t/99_cleanup.t
+t/pod.t
 t/cleanup.sh
 t/cvs.sh
 
