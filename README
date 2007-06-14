@@ -21,11 +21,20 @@ To install this module type the following:
    make test
    make install
 
+You will be prompted for the path to your cvs binary (/usr/bin/cvs on most
+Unix-like systems), and for any value you wish to set for CVSROOT , i.e C<cvs -d>, e.g.
+C<:ext:user@cvs.remoterepo.tld:/path/to/repo> (you can leave this blank if you
+have set CVSROOT in you environment, or you have C<cvs -d> in your C<.cvsrc>.
+
+See C<man cvs> for more on C<cvs -d>, C<CVSROOT> and C<.cvsrc>.
+
 DEPENDENCIES
 
 This module requires these other modules and libraries:
 
-  blah blah blah
+  File::Copy
+  Test::More
+  Test::Pod
 
 COPYRIGHT AND LICENCE
 
