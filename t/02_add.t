@@ -1,10 +1,10 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Cwd;
-use Test::More qw(no_plan);
-use Cvs::Simple;
 use File::Copy;
+use File::Spec;
+use Test::More tests=>10;
+use Cvs::Simple;
 
 my($add_ok,$commit_ok,$update_ok,$merge_ok) = (0,0,0,0);
 my($add_callback) = sub {
@@ -40,25 +40,35 @@ isa_ok($cvs,'Cvs::Simple');
 $cvs->callback(update   => $add_callback   );
 $cvs->callback(commit   => $commit_callback);
 
-my($cwd) = cwd;
+#if(-x $cvs->cvs_bin ) { # Do we have cvs?
+
+SKIP: {
+skip(q{Cvs not in $cvs->cvs_bin}, 7 ) unless (-x $cvs->cvs_bin );
+
+my($cwd) = File::Spec->curdir();
 unless ($cwd=~m{/t\z}) {
-    chdir("$cwd/t");
-    $cwd = cwd;
+    chdir(File::Spec->catdir($cwd, 't'));
+    $cwd = File::Spec->curdir();
 }
 
-my($testdir) = '/tmp';
-my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
-qx[$cwd/cleanup.sh          $testdir >>/dev/null 2>&1];
-qx[$cwd/cvs.sh     $cvs_bin $testdir >>/dev/null 2>&1];
+my($clean)  = File::Spec->catfile($cwd, 'cleanup.sh');
+my($cvs_sh) = File::Spec->catfile($cwd, 'cvs.sh');
 
-my($repos) = "$testdir/cvsdir";
+my($testdir) = File::Spec->tmpdir();
+my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
+qx[$clean               $testdir >>/dev/null 2>&1];
+qx[$cvs_sh     $cvs_bin $testdir >>/dev/null 2>&1];
+
+my($repos) = File::Spec->catdir($testdir, 'cvsdir');
 $cvs->external($repos);
 
 my($basefile) = 'add_test_01.txt';
 
 diag('Add a file');
 $cvs->co('Add');
-File::Copy::copy("Add/$basefile", 'Add/add_test_02.txt')
+File::Copy::copy(
+    File::Spec->catfile('Add',$basefile), 
+    File::Spec->catfile('Add','add_test_02.txt'))
     or die "Can\'t copy file $basefile:$!";
 chdir('Add') or die $!;
 $cvs->add('add_test_02.txt');
@@ -99,6 +109,8 @@ unlink('add_test_03.txt');
 $cvs->update('add_test_03.txt');
 
 is($update_ok,2);
+
+} # End of skip
 
 {
 local($@);
