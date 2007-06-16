@@ -1,5 +1,8 @@
 Revision history for Perl extension Cvs::Simple.
 
+0.02  Sat Jun 16 10:31:23 2007
+    - Amended tests for non-availability of cvs binary.
+
 0.01  Sat Jun  9 21:56:32 2007
 	- original version; created by h2xs 1.23 with options
 		-AX -n Cvs::Simple
