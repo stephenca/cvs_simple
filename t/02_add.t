@@ -40,8 +40,6 @@ isa_ok($cvs,'Cvs::Simple');
 $cvs->callback(update   => $add_callback   );
 $cvs->callback(commit   => $commit_callback);
 
-#if(-x $cvs->cvs_bin ) { # Do we have cvs?
-
 SKIP: {
 skip(q{Cvs not in $cvs->cvs_bin}, 7 ) unless (-x $cvs->cvs_bin );
 
