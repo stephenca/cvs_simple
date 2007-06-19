@@ -334,10 +334,20 @@ sub diff {
 }
 
 sub status {
+# status()
+# status(file1, ... )
     my($self) = shift;
     my(@args) = @_;
 
+    my($cmd) = $self->_cmd('status -v');
+
+    if(@args) {
+        $cmd .= join ' ' => @args;
+    }
+
+    return $self->cvs_cmd($cmd);
 }
+
 sub upd {
     goto &update;
 }
