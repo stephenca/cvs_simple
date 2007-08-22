@@ -1,66 +1,13 @@
 #!/usr/bin/perl
-package Cvs::Simple;
-use strict;
-use warnings;
-use Carp;
-
-sub new {
-    my($class) = shift;
-    my($self)  = {};
-    bless $self, $class;
-    return $self;
-}
-
-sub external {
-    my($self) = shift;
-    carp "@_";
-}
-
-sub merge {
-    my($self) = shift;
-    $self->external(merge => @_);
-    return 'print "MERGE\n"; ';
-}
-
-sub update {
-    return 'print "UPDATE\n"; ';
-}
-
-sub add {
-    my($self) = shift;
-    $self->external(add => @_);
-    return 'print "ADD\n"; ';
-}
-
-sub commit {
-    my($self) = shift;
-    $self->external(commit => @_);
-    return 'print "COMMIT\n"; ';
-}
-
-sub checkout {
-    my($self) = shift;
-    $self->external(checkout => @_);
-    return 'print "CHECKOUT\n"; ';
-}
-
-sub diff {
-    my($self) = shift;
-    $self->external(diff => @_);
-    return 'print "DIFF\n"; ';
-}
-
-1;
-
 package Cvs::Simple::Cmd;
 use strict;
 use warnings;
-#use Cvs::Simple;
-use List::Util qw(first);
+use Cvs::Simple;
 use Filter::Simple;
 
-use vars qw($VERSION  %despatch);
-$VERSION = '0.01';
+use vars qw($VERSION $SEEN_EXTERN %despatch);
+$VERSION = '0.03';
+$SEEN_EXTERN = '';
 
 BEGIN {
 
@@ -68,14 +15,62 @@ sub SKIP ($) {
     return 'print "Skipping ' . $_[0] . '\n";';
 }
 
+sub quote (@) {
+    return map { q{'} . $_ . q{'} } @_;
+}
+
+sub global_cmd ($) {
+    return   defined $_[0] 
+           ? $_[0] eq $SEEN_EXTERN 
+           ? undef 
+           : do { $SEEN_EXTERN = $_[0]; $_[0] . "\n" }
+           : undef;
+}
+
     my($cvs) = Cvs::Simple->new();
 
     (%despatch) = (
-        add      => sub { return $cvs->add     (@_) },
-        checkout => sub { return $cvs->checkout(@_) },
-        external => sub { return $cvs->external(@_) },
+        add      => sub {
+            my($cmd) = global_cmd shift(@_);
+            my($txt) = join ',' => quote @_;
+            $cmd .= sprintf('%s%s%s', '$cvs->add(', $txt, ');');
+            return $cmd;
+        },
+        commit   => sub {
+            my($cmd) = global_cmd shift(@_);
+            $cmd .= '$cvs->commit(';
+
+            if (defined($_[0]) && $_[0]=~/^-r\b/) {
+                shift(@_);
+                $cmd .= shift(@_) . ',';
+            }
+
+            if(@_) {
+                $cmd .= sprintf("[ %s ]);", (join '' => quote @_) );
+            }
+            else {
+                $cmd .= ');';
+            }
+            return $cmd;
+        },
+        checkout => sub {
+            my($cmd) = global_cmd shift(@_);
+            shift @_ if $_[0]=~/^-r\b/;
+
+            $cmd     .= '$cvs->co('
+                     .  (join ',' => quote @_)
+                     .  ');';
+            return $cmd;
+        },
+        external => sub {
+            return 
+                join '' =>
+                   '$cvs->external(q[' ,
+                   shift @_,
+                   ']);' ;
+        },
         diff     => sub {
-            # we currently cnly support -c (context) diffs.
+            # we currently only support -c (context) diffs.
             if($_[0]=~ /^-c\b/ ) {
                 my($opt) = shift;
                 return $cvs->diff(@_);
@@ -87,7 +82,7 @@ sub SKIP ($) {
         },
         update   => sub {
             # -j means a merge.
-            if(first { $_ =~ /^-j/i } @_) {
+            if(grep { $_ =~ /^-j/i } @_) {
                 return $cvs->merge   (@_);
             }
             else {
@@ -95,7 +90,6 @@ sub SKIP ($) {
             }
         },
     );
-
 }
 
 sub _filter {
@@ -108,12 +102,14 @@ sub _filter {
 
     my(@cmds) = split /\s+/, $cmd;
 
+    my($global_cmd);
+
     # Handle cvs commands first.
     # Currently we only support -d.
     if($cmds[0]=~/^-./) {
         my($opt) = shift @cmds;
         if($opt eq '-d') {
-            $despatch{external}->(shift @cmds);
+            $global_cmd = $despatch{external}->(shift @cmds);
         }
         else {
             return SKIP $cmd;
@@ -122,7 +118,7 @@ sub _filter {
 
     while(my($c) = shift @cmds) {
         if(exists $despatch{$c}) {
-            return $despatch{$c}->(@cmds)
+            return $despatch{$c}->($global_cmd, @cmds)
         }
         else {
             return SKIP $cmd;
