@@ -2,11 +2,11 @@
 use strict;
 use warnings;
 use Test::More qw(no_plan);
-#use lib '../lib';
 
 BEGIN {
     use_ok('Cvs::Simple');
     use_ok('Cvs::Simple::Config');
+    use_ok('Cvs::Simple::Cmd');
 }
 
 my($cvs) = Cvs::Simple->new();
