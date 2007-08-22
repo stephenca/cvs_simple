@@ -5,7 +5,7 @@ use IO::File;
 # the contents of the Makefile that is written.
 
 my($cvs_bin) = prompt('Your cvs path and binary name: ', '/usr/bin/cvs');
-my($external) = prompt('cvs -d option: ');
+my($external) = prompt('cvs -d option: ', '');
 
 my($subs) = "sub CVS_BIN  () { '$cvs_bin' }";
 if(defined($external)) { $subs .= "\nsub EXTERNAL () { '$external' }" };
@@ -28,8 +28,10 @@ WriteMakefile(
     NAME              => 'Cvs::Simple',
     VERSION_FROM      => 'lib/Cvs/Simple.pm', # finds $VERSION
     PREREQ_PM => {
-            'File::Copy' => 0,
-            'Test::More' => 0,
+            'Filter::Simple' => 0,
+            'List::Util'     => 0,
+            'File::Copy'     => 0,
+            'Test::More'     => 0,
     },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Cvs/Simple.pm', # retrieve abstract from module
