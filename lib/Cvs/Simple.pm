@@ -8,18 +8,25 @@ use FileHandle;
 
 our $VERSION = 0.03;
 
+{
 my(%PERMITTED) = (
-    'All'  => '',
-    'add'  => '',
-    'checkout'  => '',
-    'commit'  => '',
-    'update'  => '',
-    'diff'  => '',
-    'status' => '',
+    'All'      => '',
+    'add'      => '',
+    'checkout' => '',
+    'commit'   => '',
+    'update'   => '',
+    'diff'     => '',
+    'status'   => '',
 );
 sub PERM_REQ () {
     my($patt) = join '|' => keys %PERMITTED;
     return qr/$patt/;
+}
+
+sub permitted ($) {
+    return exists $PERMITTED{$_[0]} ? 1 : 0;
+}
+
 }
 my($PERM_REQ) = PERM_REQ;
 
@@ -62,7 +69,7 @@ sub callback {
     # If 'hook' is not supplied, callback is global, i.e. apply to all.
     $hook ||= 'All';
 
-    unless(exists $PERMITTED{$hook}) {
+    unless(permitted($hook)) {
         croak "Invalid hook type in callback: $hook.";
     }
 
@@ -85,7 +92,7 @@ sub unset_callback {
     my($self) = shift;
     my($hook) = shift;
 
-    unless(exists $PERMITTED{$hook}) {
+    unless(permitted($hook)) {
         croak "Invalid hook type in unset_callback: $hook.";
     }
 
