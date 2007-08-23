@@ -6,7 +6,7 @@ use Carp;
 use Cvs::Simple::Config;
 use FileHandle;
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 my(%PERMITTED) = (
     'All'  => '',
@@ -114,6 +114,8 @@ sub cvs_cmd {
 
     croak "Syntax: cvs_cmd(cmd)" unless (defined($cmd) && $cmd);
 
+    STDOUT->autoflush;
+
     my($hook);
     if(($cmd)=~/\b($PERM_REQ)\b/) {
         $hook = $1;
@@ -123,10 +125,16 @@ sub cvs_cmd {
     defined($fh) or croak "Failed to open $cmd:$!";
 
     while(<$fh>) {
+        my($x) = $_;
+        chomp($x);
+
         if(defined($hook)) {
             if($self->callback($hook)) {
                 $self->callback($hook)->($cmd,$_);
             } 
+            else {
+                print STDOUT $_;
+            }
         }
         else {
             if($self->callback('All')) {
