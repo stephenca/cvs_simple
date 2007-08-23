@@ -27,8 +27,17 @@ sub permitted ($) {
     return exists $PERMITTED{$_[0]} ? 1 : 0;
 }
 
+sub get_hook ($) {
+    my($cmd) = shift;
+    my($hook);
+    if(($cmd)=~/\b(PERM_REQ)\b/) {
+        $hook = $1;
+    }
+    return $hook;
 }
-my($PERM_REQ) = PERM_REQ;
+
+}
+#my($PERM_REQ) = PERM_REQ;
 
 sub new {
     my($class) = shift;
@@ -123,10 +132,11 @@ sub cvs_cmd {
 
     STDOUT->autoflush;
 
-    my($hook);
-    if(($cmd)=~/\b($PERM_REQ)\b/) {
-        $hook = $1;
-    }
+    #my($hook);
+    #if(($cmd)=~/\b($PERM_REQ)\b/) {
+    #    $hook = $1;
+    #}
+    my($hook)= get_hook $cmd;
 
     my($fh) = FileHandle->new("$cmd 2>&1 |");
     defined($fh) or croak "Failed to open $cmd:$!";
