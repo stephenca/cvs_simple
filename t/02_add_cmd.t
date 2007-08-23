@@ -41,25 +41,33 @@ unless ($cwd=~m{/t\z}) {
     $cwd = rel2abs(curdir());
 }
 
-print STDERR $cwd, "\n";
 my($clean)  = catfile($cwd, 'cleanup.sh');
 my($cvs_sh) = catfile($cwd, 'cvs.sh');
 
 my($testdir) = tmpdir();
 my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
 qx[$clean               $testdir >>/dev/null 2>&1];
-qx[$cvs_sh     $cvs_bin $testdir ]; # >>/dev/null 2>&1];
+qx[$cvs_sh     $cvs_bin $testdir >>/dev/null 2>&1];
 
 my($repos) = catdir($testdir, 'cvsdir');
 
 my($basefile) = 'add_test_01.txt';
 
 diag('Add a file');
-
 use Cvs::Simple::Cmd;
 cvs -d :local:/tmp/cvsdir checkout Add;
+no Cvs::Simple::Cmd;
+
+File::Copy::copy(
+    File::Spec->catfile($cwd, 'Add',$basefile),
+    File::Spec->catfile($cwd, 'Add','add_test_02.txt'))
+    or die "Can\'t copy file $basefile :$!";
+chdir('Add') or die $!;
+
+use Cvs::Simple::Cmd;
 cvs -d :local:/tmp/cvsdir add add_test_02.txt;
-cvs -d :local:/tmp/cvsdir commit add_test_02.txt;
+cvs commit add_test_02.txt;
+cvs status add_test_02.txt
 
 no Cvs::Simple::Cmd;
 

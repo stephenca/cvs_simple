@@ -30,6 +30,12 @@ sub global_cmd ($) {
     my($cvs) = Cvs::Simple->new();
 
     (%despatch) = (
+        status   => sub {
+            my($cmd) = global_cmd shift(@_);
+            my($txt) = join ',' => quote @_;
+            $cmd .= sprintf('%s%s%s', '$cvs->status(',$txt, ');');
+            return $cmd;
+        },
         add      => sub {
             my($cmd) = global_cmd shift(@_);
             my($txt) = join ',' => quote @_;
