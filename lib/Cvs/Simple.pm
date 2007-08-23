@@ -29,15 +29,15 @@ sub permitted ($) {
 
 sub get_hook ($) {
     my($cmd) = shift;
+    my($PERM_REQ) = PERM_REQ;
     my($hook);
-    if(($cmd)=~/\b(PERM_REQ)\b/) {
+    if(($cmd)=~/\b($PERM_REQ)\b/) {
         $hook = $1;
     }
     return $hook;
 }
 
 }
-#my($PERM_REQ) = PERM_REQ;
 
 sub new {
     my($class) = shift;
