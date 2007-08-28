@@ -1,12 +1,7 @@
 #!/usr/bin/perl
-package Cvs::Simple;
+package Cvs::Simple::Hook;
 use strict;
 use warnings;
-use Carp;
-use Cvs::Simple::Config;
-use FileHandle;
-
-our $VERSION = 0.03;
 
 {
 my(%PERMITTED) = (
@@ -28,16 +23,30 @@ sub permitted ($) {
 }
 
 sub get_hook ($) {
-    my($cmd) = shift;
+    my($cmd)      = shift;
+
     my($PERM_REQ) = PERM_REQ;
-    my($hook);
+
     if(($cmd)=~/\b($PERM_REQ)\b/) {
-        $hook = $1;
+        return $1;
     }
-    return $hook;
+    else {
+        return;
+    }
 }
 
 }
+
+1;
+
+package Cvs::Simple;
+use strict;
+use warnings;
+use Carp;
+use Cvs::Simple::Config;
+use FileHandle;
+
+our $VERSION = 0.03;
 
 sub new {
     my($class) = shift;
@@ -78,7 +87,7 @@ sub callback {
     # If 'hook' is not supplied, callback is global, i.e. apply to all.
     $hook ||= 'All';
 
-    unless(permitted($hook)) {
+    unless(Cvs::Simple::Hook::permitted($hook)) {
         croak "Invalid hook type in callback: $hook.";
     }
 
@@ -101,7 +110,7 @@ sub unset_callback {
     my($self) = shift;
     my($hook) = shift;
 
-    unless(permitted($hook)) {
+    unless(Cvs::Simple::Hook::permitted($hook)) {
         croak "Invalid hook type in unset_callback: $hook.";
     }
 
@@ -132,19 +141,12 @@ sub cvs_cmd {
 
     STDOUT->autoflush;
 
-    #my($hook);
-    #if(($cmd)=~/\b($PERM_REQ)\b/) {
-    #    $hook = $1;
-    #}
-    my($hook)= get_hook $cmd;
+    my($hook)= Cvs::Simple::Hook::get_hook $cmd;
 
     my($fh) = FileHandle->new("$cmd 2>&1 |");
     defined($fh) or croak "Failed to open $cmd:$!";
 
     while(<$fh>) {
-        my($x) = $_;
-        chomp($x);
-
         if(defined($hook)) {
             if($self->callback($hook)) {
                 $self->callback($hook)->($cmd,$_);
