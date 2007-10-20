@@ -537,11 +537,19 @@ CVS global option.
 Add a file or files to the repository; equivalent to C<cvs add file1, ....>,
 or C<cvs add -kb file1, ...> in the case of add_bin().
 
+=item co ( TAG, MODULE )
+
+  Alias for checkout()
+
 =item checkout ( MODULE )
 
 =item checkout ( TAG, MODULE )
 
   Note that co() can be used as an alias for checkout().
+
+=item ci
+
+  Alias for commit().
 
 =item commit ( )
 
@@ -570,6 +578,8 @@ diff -c -rTAG1 -rTAG2 FILE_OR_DIR>.
 This is the equivalent of C<cvs -q update -jOLD_REV -jNEW_REV FILENAME>.  Note
 for callback purposes that this is actually an update().
 
+=item backout ( CURRENT_REV, REVERT_REV, FILENAME )
+
 =item undo ( CURRENT_REV, REVERT_REV, FILENAME )
 
 Reverts from CURRENT_REV to REVERT_REV.  Equivalent to C<cvs update
@@ -582,6 +592,10 @@ Note that for callback purposes this is actually an update().
 =item status 
 
 Not implemented yet: method is a stub.
+
+=item upd 
+
+  Alias for update().
 
 =item update ( )
 
