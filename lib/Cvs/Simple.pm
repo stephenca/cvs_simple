@@ -43,94 +43,97 @@ package Cvs::Simple;
 use strict;
 use warnings;
 use Carp;
+use Class::Std::Utils;
 use Cvs::Simple::Config;
 use FileHandle;
 
 our $VERSION = 0.03;
 
-sub new {
-    my($class) = shift;
-    my($self) = {};
-    bless $self, $class;
-    $self->_init(@_);
-    return $self;
-}
+{
+    my(%cvs_bin_of);
+    my(%external_of);
+    my(%callback_of);
+    my(%repos_of);
 
-sub _init {
-    my($self) = shift;
-    my(%args) = @_;
-
-    if(exists $args{cvs_bin}) {
-        $self->cvs_bin($args{cvs_bin});
-    }
-    else {
-        $self->cvs_bin(Cvs::Simple::Config::CVS_BIN);
+    sub new {
+        my($class) = shift;
+        my($self) = bless anon_scalar(), $class;
+        $self->_init(@_);
+        return $self;
     }
 
-    if(exists $args{external}) {
-        $self->external($args{external});
-    }
-    elsif (Cvs::Simple::Config::EXTERNAL) {
-        $self->external(Cvs::Simple::Config::EXTERNAL);
+    sub _init {
+        my($self) = shift;
+        my(%args) = @_;
+
+        if(exists $args{cvs_bin}) {
+            $self->cvs_bin($args{cvs_bin});
+        }
+        else {
+           $self->cvs_bin(Cvs::Simple::Config::CVS_BIN);
+        }
+
+        if(exists $args{external}) {
+            $self->external($args{external});
+        }
+        elsif (Cvs::Simple::Config::EXTERNAL) {
+            $self->external(Cvs::Simple::Config::EXTERNAL);
+        }
+        else {
+            ();
+        }
+
+        if(exists $args{callback}) {
+            $self->callback($args{callback});
+        }
     }
 
-    if(exists $args{callback}) {
-        $self->callback($args{callback});
-    }
-}
+    sub callback {
+        my($self) = shift;
+        my($hook) = shift;
+        my($func) = shift;
 
-sub callback {
-    my($self) = shift;
-    my($hook) = shift;
-    my($func) = shift;
+        # If 'hook' is not supplied, callback is global, i.e. apply to all.
+        $hook ||= 'All';
 
-    # If 'hook' is not supplied, callback is global, i.e. apply to all.
-    $hook ||= 'All';
+        unless(Cvs::Simple::Hook::permitted($hook)) {
+            croak "Invalid hook type in callback: $hook.";
+        }
 
-    unless(Cvs::Simple::Hook::permitted($hook)) {
-        croak "Invalid hook type in callback: $hook.";
-    }
+        if(defined($func)) {
+            UNIVERSAL::isa(($func), 'CODE') or do {
+                croak "Argument supplied to callback() should be a coderef.";
+            };
+            $callback_of{ident $self}{$hook} = $func;
+        }
 
-    if(defined($func)) {
-        UNIVERSAL::isa(($func), 'CODE') or do {
-            croak "Argument supplied to callback() should be a coderef.";
-        };
-        $self->{callback}{$hook} = $func;
-    }
-
-    if(exists $self->{callback}{$hook}) {
-        return $self->{callback}{$hook};
-    }
-    else {
-        return;
-    }
-}
-
-sub unset_callback {
-    my($self) = shift;
-    my($hook) = shift;
-
-    unless(Cvs::Simple::Hook::permitted($hook)) {
-        croak "Invalid hook type in unset_callback: $hook.";
+        if(exists $callback_of{ident $self}{$hook}) {
+            return $callback_of{ident $self}{$hook};
+        }
+        else {
+            return;
+        }
     }
 
-    if(exists $self->{callback}{$hook}) {
-        return delete $self->{callback}{$hook};
+    sub unset_callback {
+        my($self) = shift;
+        my($hook) = shift;
+
+        unless(Cvs::Simple::Hook::permitted($hook)) {
+            croak "Invalid hook type in unset_callback: $hook.";
+        }
+
+        return delete $callback_of{ident $self}{$hook};
     }
-    else {
-        return;
-    }
-}
 
 sub cvs_bin {
     my($self) = shift;
-    my($bin)  = shift;
 
-    if($bin) {
-        $self->{cvs_bin} = $bin;
+    if(@_==1) {
+        $cvs_bin_of{ident $self} = shift; 
     }
 
-    return $self->{cvs_bin};
+    return $cvs_bin_of{ident $self};
 }
 
 sub cvs_cmd {
@@ -206,12 +209,11 @@ SYN
 
 sub external {
     my($self)  = shift;
-    my($repos) = shift;
 
-    if($repos) {
-        $self->{repos} = $repos;
+    if(@_==1) {
+        $repos_of{ident $self} = shift;
     }
-    return $self->{repos};
+    return $repos_of{ident $self};
 }
 
 sub _cmd {
@@ -394,16 +396,25 @@ sub update {
     return $self->cvs_cmd($cmd);
 }
 
-sub up2date {
-# Checks workspace status. No args.
-    my($self) = shift;
+    sub up2date {
+    # Checks workspace status. No args.
+        my($self) = shift;
 
-    my($cmd) = $self->_cmd('-nq update -d');
+        my($cmd) = $self->_cmd('-nq update -d');
 
-    return $self->cvs_cmd($cmd);
+        return $self->cvs_cmd($cmd);
+    }
+
+    sub DESTROY {
+        my($self) = shift;
+        delete($cvs_bin_of {ident $self});
+        delete($external_of{ident $self});
+        delete($callback_of{ident $self});
+
+        return;
+    }
+
 }
-
-
 1;
 __END__
 =pod
