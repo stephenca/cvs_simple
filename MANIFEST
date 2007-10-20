@@ -6,7 +6,6 @@ README
 cvsup2date
 examples/cmd.pl
 lib/Cvs/Simple.pm
-lib/Cvs/Simple/Cmd.pm
 lib/Cvs/Simple/Config.pm
 repository/Add/add_test_01.txt
 t/01.t
@@ -19,6 +18,7 @@ t/07_commit.t
 t/08_status.t
 t/99_cleanup.t
 t/pod.t
+t/pod-coverage.t
 t/cleanup.sh
 t/cvs.sh
 
