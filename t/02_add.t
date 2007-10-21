@@ -44,18 +44,19 @@ SKIP: {
 skip(q{Cvs not in $cvs->cvs_bin}, 7 ) unless (-x $cvs->cvs_bin );
 
 my($cwd) = File::Spec->curdir();
-unless ($cwd=~m{/t\z}) {
+unless((File::Spec->splitdir($cwd))[-1] eq 't') {
     chdir(File::Spec->catdir($cwd, 't'));
     $cwd = File::Spec->curdir();
 }
 
 my($clean)  = File::Spec->catfile($cwd, 'cleanup.sh');
 my($cvs_sh) = File::Spec->catfile($cwd, 'cvs.sh');
+my($devnull)= File::Spec->devnull;
 
 my($testdir) = File::Spec->tmpdir();
 my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
-qx[$clean               $testdir >>/dev/null 2>&1];
-qx[$cvs_sh     $cvs_bin $testdir >>/dev/null 2>&1];
+qx[$clean               $testdir >>$devnull 2>&1];
+qx[$cvs_sh     $cvs_bin $testdir >>$devnull 2>&1];
 
 my($repos) = File::Spec->catdir($testdir, 'cvsdir');
 $cvs->external($repos);

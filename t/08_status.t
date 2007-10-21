@@ -3,40 +3,47 @@ use strict;
 use warnings;
 use File::Copy;
 use File::Spec;
-use Test::More qw(no_plan);
+use Test::More tests=>5;
 use Cvs::Simple;
+use Scalar::Util qw(reftype);
 
 my($status_ok) = 0;
+my(@stat_line);
 my($status_callback) = sub {
     my($cmd,$line) = @_;
     return unless ($cmd=~m{\bstatus\b});
+
     if($line=~m{\A\s+working revision:\s+\d+\.\d+}i) {
         ++$status_ok;
     }
+    push @stat_line, $line;
 };
 
 my($cvs) = Cvs::Simple->new();
-isa_ok($cvs,'Cvs::Simple');
+isa_ok($cvs,'Cvs::Simple','ISA Cvs::Simple');
 
 # Set our callbacks.  
 $cvs->callback(status   => $status_callback   );
+
+is(reftype($cvs->callback('status')), 'CODE','Callback OK');
 
 SKIP: {
 skip(q{Cvs not in $cvs->cvs_bin}, 1 ) unless (-x $cvs->cvs_bin );
 
 my($cwd) = File::Spec->curdir();
-unless ($cwd=~m{/t\z}) {
+unless((File::Spec->splitdir($cwd))[-1] eq 't') {
     chdir (File::Spec->catdir($cwd, 't'));
     $cwd = File::Spec->curdir();
 }
 
-my($clean)  = File::Spec->catfile($cwd, 'cleanup.sh');
-my($cvs_sh) = File::Spec->catfile($cwd, 'cvs.sh');
+my($clean)   = File::Spec->catfile($cwd, 'cleanup.sh');
+my($cvs_sh)  = File::Spec->catfile($cwd, 'cvs.sh');
 
 my($testdir) = File::Spec->tmpdir();
 my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
-qx[$clean               $testdir >>/dev/null 2>&1];
-qx[$cvs_sh     $cvs_bin $testdir >>/dev/null 2>&1];
+my($devnull) = File::Spec->devnull();
+qx[$clean               $testdir >>$devnull 2>&1];
+qx[$cvs_sh     $cvs_bin $testdir >>$devnull 2>&1];
 
 my($repos) = File::Spec->catdir($testdir, 'cvsdir');
 $cvs->external($repos);
@@ -44,10 +51,11 @@ $cvs->external($repos);
 my($basefile) = 'add_test_01.txt';
 
 $cvs->co('Add');
-chdir('Add') or die $!;
+chdir(File::Spec->catdir($cwd,'Add')) or die $!;
 
 $cvs->status($basefile);
 is($status_ok,1);
+
 } # End of skip
 
 {
