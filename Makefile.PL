@@ -59,7 +59,7 @@ WriteMakefile(
     NAME              => 'Cvs::Simple',
     VERSION_FROM      => 'lib/Cvs/Simple.pm', # finds $VERSION
     PREREQ_PM => {
-            'Filter::Simple' => 0,
+            'Scalar::Util'   => 0,
             'List::Util'     => 0,
             'File::Copy'     => 0,
             'Test::More'     => 0,
