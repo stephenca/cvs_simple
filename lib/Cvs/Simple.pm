@@ -589,10 +589,6 @@ Note that backout() can be used as an alias for undo().
 
 Note that for callback purposes this is actually an update().
 
-=item status 
-
-Not implemented yet: method is a stub.
-
 =item upd 
 
   Alias for update().
@@ -610,6 +606,12 @@ Note that upd() is an alias for update().
 =item up2date ( )
 
 Short-hand for C<cvs -nq update -d>.
+
+=item status ( )
+
+=item status( file1 [, ..., ... ] )
+
+Equivalent to C<cvs status -v>.
 
 =back
 
