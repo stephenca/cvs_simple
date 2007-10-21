@@ -1,4 +1,4 @@
-Cvs-Simple version 0.01
+Cvs-Simple version 0.03
 =======================
 
 The README is used to introduce the module and provide instructions on
@@ -32,6 +32,8 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
+  Scalar::Util
+  List::Util
   File::Copy
   Test::More
   Test::Pod
