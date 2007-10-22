@@ -32,8 +32,8 @@ DEPENDENCIES
 
 This module requires these other modules and libraries:
 
+  Class::Std::Utils
   Scalar::Util
-  List::Util
   File::Copy
   Test::More
   Test::Pod

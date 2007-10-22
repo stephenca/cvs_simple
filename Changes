@@ -1,4 +1,8 @@
 Revision history for Perl extension Cvs::Simple.
+0.03  Mon Oct 22 15:15:00 2007
+    - Now uses Class::Std::Utils (aka "inside-out" objects")
+    - More tests; added pod.t and pod-coverage.t
+    - Fixed a bug with default (non-callback) output.
 
 0.02  Sat Jun 16 10:31:23 2007
     - Amended tests for non-availability of cvs binary.

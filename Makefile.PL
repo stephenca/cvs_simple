@@ -62,6 +62,7 @@ WriteMakefile(
             'Class::Std::Utils' => 0,
             'Scalar::Util'      => 0,
             'File::Copy'        => 0,
+            'Test::Pod'         => 0,
             'Test::More'        => 0,
     },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005

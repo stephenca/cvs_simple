@@ -8,6 +8,7 @@ requires:
     Class::Std::Utils              0
     Scalar::Util                   0 
     File::Copy:                    0
+    Test::Pod:                     0
     Test::More:                    0
 
 distribution_type: module
