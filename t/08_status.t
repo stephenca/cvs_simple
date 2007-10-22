@@ -36,14 +36,14 @@ unless((File::Spec->splitdir($cwd))[-1] eq 't') {
     $cwd = File::Spec->curdir();
 }
 
-my($clean)   = File::Spec->catfile($cwd, 'cleanup.sh');
-my($cvs_sh)  = File::Spec->catfile($cwd, 'cvs.sh');
+my($clean)   = File::Spec->catfile($cwd, 'cleanup.pl');
+my($cvs_sh)  = File::Spec->catfile($cwd, 'cvs.pl');
 
 my($testdir) = File::Spec->tmpdir();
 my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
 my($devnull) = File::Spec->devnull();
-qx[$clean               $testdir >>$devnull 2>&1];
-qx[$cvs_sh     $cvs_bin $testdir >>$devnull 2>&1];
+qx[$clean ];
+qx[$cvs_sh];
 
 my($repos) = File::Spec->catdir($testdir, 'cvsdir');
 $cvs->external($repos);

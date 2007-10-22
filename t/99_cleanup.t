@@ -14,8 +14,8 @@ unless ($cwd=~m{/t\z}) {
     $cwd = File::Spec->curdir();
 }
 my($testdir) = File::Spec->tmpdir();
-my($clean) = File::Spec->catfile($cwd, 'cleanup.sh');
-qx[$clean $testdir];
+my($clean) = File::Spec->catfile($cwd, 'cleanup.pl');
+qx[$clean ];
 
 exit;
 

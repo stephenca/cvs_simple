@@ -3,7 +3,8 @@ use strict;
 use warnings;
 use File::Copy;
 use File::Spec;
-use Test::More tests=>10;
+#use Test::More tests=>10;
+use Test::More qw(no_plan);
 use Cvs::Simple;
 
 my($add_ok,$commit_ok,$update_ok,$merge_ok) = (0,0,0,0);
@@ -49,14 +50,14 @@ unless((File::Spec->splitdir($cwd))[-1] eq 't') {
     $cwd = File::Spec->curdir();
 }
 
-my($clean)  = File::Spec->catfile($cwd, 'cleanup.sh');
-my($cvs_sh) = File::Spec->catfile($cwd, 'cvs.sh');
+my($clean)  = File::Spec->catfile($cwd, 'cleanup.pl');
+my($cvs_sh) = File::Spec->catfile($cwd, 'cvs.pl');
 my($devnull)= File::Spec->devnull;
 
 my($testdir) = File::Spec->tmpdir();
 my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
-qx[$clean               $testdir >>$devnull 2>&1];
-qx[$cvs_sh     $cvs_bin $testdir >>$devnull 2>&1];
+qx[$clean ];
+qx[$cvs_sh];
 
 my($repos) = File::Spec->catdir($testdir, 'cvsdir');
 $cvs->external($repos);
