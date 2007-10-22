@@ -14,7 +14,7 @@ my($CVSDIR)=tmpdir();
 
 my($TMPL) ="repository";
 my($REP)  ="cvsdir";
-my($LOCAL)=join '' => ':local:', catdir($CVSDIR, $REP);
+my($LOCAL)=sprintf(':local:%s', catdir($CVSDIR, $REP) );
 
 my($cwd) = rel2abs(curdir());
 unless((splitdir($cwd))[-1] eq 't') {
@@ -31,11 +31,11 @@ my($cleardir) = sub {
 
     my($DIR);
 
-    chdir  ($path)          or do {warn "Can\'t chdir to $path:$!" and return};
+    chdir  ( $path        ) or do {warn "Can\'t chdir to $path:$!" and return};
     opendir( $DIR, curdir ) or die "Can\'t openddir:$!";
 
     my(@dir) ;
-    for my $t (grep { $_!~/\A\.+\z/ } readdir $DIR ) {
+    for my $t ( grep { $_!~/\A\.+\z/ } readdir $DIR ) {
         if( -f $t ) {
             unlink catdir(curdir(),$t) or die "Can't unlink $t:$!";
         }
