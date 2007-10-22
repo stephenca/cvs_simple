@@ -5,7 +5,7 @@ version:      0.03
 version_from: lib/Cvs/Simple.pm
 installdirs:  site
 requires:
-    List::Util                     0
+    Class::Std::Utils              0
     Scalar::Util                   0 
     File::Copy:                    0
     Test::More:                    0

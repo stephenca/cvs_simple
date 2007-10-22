@@ -59,10 +59,10 @@ WriteMakefile(
     NAME              => 'Cvs::Simple',
     VERSION_FROM      => 'lib/Cvs/Simple.pm', # finds $VERSION
     PREREQ_PM => {
-            'Scalar::Util'   => 0,
-            'List::Util'     => 0,
-            'File::Copy'     => 0,
-            'Test::More'     => 0,
+            'Class::Std::Utils' => 0,
+            'Scalar::Util'      => 0,
+            'File::Copy'        => 0,
+            'Test::More'        => 0,
     },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Cvs/Simple.pm', # retrieve abstract from module
