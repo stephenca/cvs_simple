@@ -58,6 +58,7 @@ $fh->close;
 WriteMakefile(
     NAME              => 'Cvs::Simple',
     VERSION_FROM      => 'lib/Cvs/Simple.pm', # finds $VERSION
+    LICENSE           => 'perl',
     PREREQ_PM => {
             'Class::Std::Utils' => 0,
             'Scalar::Util'      => 0,
