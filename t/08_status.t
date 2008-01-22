@@ -2,9 +2,11 @@
 use strict;
 use warnings;
 use File::Copy;
-use File::Spec;
+use File::Spec::Functions qw(catdir curdir splitdir devnull tmpdir);
 use Test::More tests=>5;
+use Cvs_Test;
 use Cvs::Simple;
+use Cwd;
 use Scalar::Util qw(reftype);
 
 my($status_ok) = 0;
@@ -30,28 +32,27 @@ is(reftype($cvs->callback('status')), 'CODE','Callback OK');
 SKIP: {
 skip(q{Cvs not in $cvs->cvs_bin}, 1 ) unless (-x $cvs->cvs_bin );
 
-my($cwd) = File::Spec->curdir();
-unless((File::Spec->splitdir($cwd))[-1] eq 't') {
+my($cwd) = getcwd();
+
+unless((splitdir($cwd))[-1] eq 't') {
     chdir (File::Spec->catdir($cwd, 't'));
-    $cwd = File::Spec->curdir();
+    $cwd = catdir($cwd, 't');
 }
+chdir($cwd) or die "Can\'t chdir to $cwd:$!";
 
-my($clean)   = File::Spec->catfile($cwd, 'cleanup.pl');
-my($cvs_sh)  = File::Spec->catfile($cwd, 'cvs.pl');
-
-my($testdir) = File::Spec->tmpdir();
+my($testdir) = tmpdir();
 my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
-my($devnull) = File::Spec->devnull();
-qx[$clean ];
-qx[$cvs_sh];
+my($devnull) = devnull();
+Cvs_Test::cvs_clean($cwd);
+Cvs_Test::cvs_make($cwd);
 
-my($repos) = File::Spec->catdir($testdir, 'cvsdir');
+my($repos) = catdir($testdir, 'cvsdir');
 $cvs->external($repos);
 
 my($basefile) = 'add_test_01.txt';
 
 $cvs->co('Add');
-chdir(File::Spec->catdir($cwd,'Add')) or die $!;
+chdir(catdir($cwd,'Add')) or die $!;
 
 $cvs->status($basefile);
 is($status_ok,1);

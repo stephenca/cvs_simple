@@ -2,10 +2,12 @@
 use strict;
 use warnings;
 use File::Copy;
-use File::Spec;
+use File::Spec::Functions qw(catfile catdir curdir tmpdir splitdir rel2abs);
 #use Test::More tests=>10;
 use Test::More qw(no_plan);
+use Cvs_Test;
 use Cvs::Simple;
+use Cwd;
 
 my($add_ok,$commit_ok,$update_ok,$merge_ok) = (0,0,0,0);
 my($add_callback) = sub {
@@ -44,31 +46,31 @@ $cvs->callback(commit   => $commit_callback);
 SKIP: {
 skip(q{Cvs not in $cvs->cvs_bin}, 7 ) unless (-x $cvs->cvs_bin );
 
-my($cwd) = File::Spec->curdir();
-unless((File::Spec->splitdir($cwd))[-1] eq 't') {
-    chdir(File::Spec->catdir($cwd, 't'));
-    $cwd = File::Spec->curdir();
+my($cwd) = getcwd();
+print STDERR 'CWD: ', $cwd, "\n";
+
+unless((splitdir($cwd))[-1] eq 't') {
+    $cwd = catfile($cwd, 't');
 }
+chdir($cwd) or die "Can\'t chdir to $cwd:$!";
 
-my($clean)  = File::Spec->catfile($cwd, 'cleanup.pl');
-my($cvs_sh) = File::Spec->catfile($cwd, 'cvs.pl');
-my($devnull)= File::Spec->devnull;
-
-my($testdir) = File::Spec->tmpdir();
 my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
-qx[$clean ];
-qx[$cvs_sh];
+Cvs_Test::cvs_clean(rel2abs($cwd));
+Cvs_Test::cvs_make(rel2abs($cwd));
 
-my($repos) = File::Spec->catdir($testdir, 'cvsdir');
+my($testdir) = tmpdir();
+my($repos)   = catdir($testdir, 'cvsdir');
 $cvs->external($repos);
+
+is($cvs->external, $repos);
 
 my($basefile) = 'add_test_01.txt';
 
 diag('Add a file');
 $cvs->co('Add');
 File::Copy::copy(
-    File::Spec->catfile('Add',$basefile), 
-    File::Spec->catfile('Add','add_test_02.txt'))
+    catfile('Add',$basefile), 
+    catfile('Add','add_test_02.txt'))
     or die "Can\'t copy file $basefile:$!";
 chdir('Add') or die $!;
 $cvs->add('add_test_02.txt');
