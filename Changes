@@ -1,7 +1,4 @@
 Revision history for Perl extension Cvs::Simple.
-0.04  Mon Oct 29 11:40:00 2007
-    - Tests now pure-perl instead of shell.
-
 0.03  Mon Oct 22 15:15:00 2007
     - Now uses Class::Std::Utils (aka "inside-out" objects")
     - More tests; added pod.t and pod-coverage.t

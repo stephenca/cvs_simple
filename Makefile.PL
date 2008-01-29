@@ -1,5 +1,5 @@
+use 5;
 use ExtUtils::MakeMaker;
-require 5.006;
 use IO::File;
 # See lib/ExtUtils/MakeMaker.pm for details of how to influence
 # the contents of the Makefile that is written.

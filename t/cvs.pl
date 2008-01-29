@@ -1,9 +1,8 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -T
 use strict;
 use warnings;
 use File::Spec::Functions qw(curdir catdir splitdir rel2abs tmpdir updir);
 use Test::More qw(no_plan);
-use lib qw(../blib/lib);
 
 BEGIN {
     use_ok(qw(Cvs::Simple::Config));
