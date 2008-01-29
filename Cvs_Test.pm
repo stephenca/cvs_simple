@@ -51,8 +51,7 @@ sub cvs_clean {
 
         my($DIR);
 
-        chdir  ( $path        ) or do {
-            warn "Can\'t chdir to $path:$!" and return };
+        chdir  ( $path        ) or return;
         opendir( $DIR, curdir ) or die "Can\'t openddir:$!";
 
         my(@dir) ;
@@ -74,7 +73,7 @@ sub cvs_clean {
         rmdir($path) or die "Can\'t rmdir $path:$!";
     };
 
-    $cleardir->('Add',                $cleardir);
+    $cleardir->('Add',               $cleardir);
     $cleardir->(catdir(tmpdir(),REP),$cleardir);
 
     return;
