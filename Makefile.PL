@@ -60,11 +60,14 @@ WriteMakefile(
     VERSION_FROM      => 'lib/Cvs/Simple.pm', # finds $VERSION
     LICENSE           => 'perl',
     PREREQ_PM => {
-            'Class::Std::Utils' => 0,
-            'Scalar::Util'      => 0,
-            'File::Copy'        => 0,
-            'Test::Pod'         => 0,
-            'Test::More'        => 0,
+            'Class::Std::Utils'   => 0,
+            'Scalar::Util'        => 0,
+            'File::Copy'          => 0,
+            'File::Path'          => 0,
+            'File::Spec'          => 0,
+            'Test::Pod'           => 1.14,
+            'Test::Pod::Coverage' => 1.04,
+            'Test::More'          => 0,
     },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Cvs/Simple.pm', # retrieve abstract from module
