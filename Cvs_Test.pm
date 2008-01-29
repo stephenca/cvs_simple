@@ -1,9 +1,10 @@
 package Cvs_Test;
 use strict;
 use warnings;
-use File::Spec::Functions qw(curdir catdir splitdir rel2abs tmpdir updir);
 use Cvs::Simple::Config;
 use Cwd;
+use File::Path;
+use File::Spec::Functions qw(curdir catdir splitdir rel2abs tmpdir updir);
 
 sub CVSBIN () { return Cvs::Simple::Config::CVS_BIN        }
 sub CVSDIR () { return tmpdir()                            }
@@ -45,36 +46,7 @@ sub cvs_clean {
 
     chdir($cwd) or die "Can\'t chdir to $cwd:$!";
 
-    my($cleardir) = sub {
-        my($path) = shift;
-        my($exec) = shift;
-
-        my($DIR);
-
-        chdir  ( $path        ) or return;
-        opendir( $DIR, curdir ) or die "Can\'t openddir:$!";
-
-        my(@dir) ;
-        for my $t ( grep { $_!~/\A\.+\z/ } readdir $DIR ) {
-            if( -f $t ) {
-                unlink catdir(curdir(),$t) or die "Can't unlink $t:$!";
-            }
-            elsif ( -d $t ) {
-                my($d) = catdir( rel2abs(curdir), $t );
-                $exec->( $d, $exec );
-            }
-            else {
-                die "Don't know what to do with $t";
-            }
-        }
-
-        closedir $DIR;
-        chdir(updir);
-        rmdir($path) or die "Can\'t rmdir $path:$!";
-    };
-
-    $cleardir->('Add',               $cleardir);
-    $cleardir->(catdir(tmpdir(),REP),$cleardir);
+    rmtree([ 'Add', catdir(tmpdir(),REP) ]);
 
     return;
 }
