@@ -1,5 +1,6 @@
 Revision history for Perl extension Cvs::Simple.
-0.05  Tue Jan 29 15:56:00 2008
+0.0.5  Tue Jan 29 15:56:00 2008
+    - Move to 'version' pragma version numbering
     - Improved t/pod-coverage.t
 
 0.04  Mon Oct 29 11:41:00 2007

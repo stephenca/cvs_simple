@@ -60,6 +60,7 @@ WriteMakefile(
     VERSION_FROM      => 'lib/Cvs/Simple.pm', # finds $VERSION
     LICENSE           => 'perl',
     PREREQ_PM => {
+            'version'             => 0,
             'Class::Std::Utils'   => 0,
             'Scalar::Util'        => 0,
             'File::Copy'          => 0,
