@@ -47,7 +47,6 @@ SKIP: {
 skip(q{Cvs not in $cvs->cvs_bin}, 7 ) unless (-x $cvs->cvs_bin );
 
 my($cwd) = getcwd();
-print STDERR 'CWD: ', $cwd, "\n";
 
 unless((splitdir($cwd))[-1] eq 't') {
     $cwd = catfile($cwd, 't');
