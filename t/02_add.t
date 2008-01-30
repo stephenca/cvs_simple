@@ -5,9 +5,9 @@ use File::Copy;
 use File::Spec::Functions qw(catfile catdir curdir tmpdir splitdir rel2abs);
 #use Test::More tests=>10;
 use Test::More qw(no_plan);
-use Cvs_Test;
 use Cvs::Simple;
 use Cwd;
+require Cvs_Test;
 
 my($add_ok,$commit_ok,$update_ok,$merge_ok) = (0,0,0,0);
 my($add_callback) = sub {

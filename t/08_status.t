@@ -4,10 +4,11 @@ use warnings;
 use File::Copy;
 use File::Spec::Functions qw(catdir curdir splitdir devnull tmpdir);
 use Test::More tests=>5;
-use Cvs_Test;
 use Cvs::Simple;
 use Cwd;
 use Scalar::Util qw(reftype);
+
+require Cvs_Test;
 
 my($status_ok) = 0;
 my(@stat_line);
