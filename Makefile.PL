@@ -62,6 +62,7 @@ WriteMakefile(
     PREREQ_PM => {
             'version'             => 0,
             'Class::Std::Utils'   => 0,
+            'Cwd'                 => 0,
             'Scalar::Util'        => 0,
             'File::Copy'          => 0,
             'File::Path'          => 0,
