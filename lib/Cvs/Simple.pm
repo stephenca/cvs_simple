@@ -48,7 +48,7 @@ use Cvs::Simple::Config;
 use FileHandle;
 
 use vars  qw($VERSION);
-use version; $VERSION = qv(0.0.5);
+use version; $VERSION = version->new( 0.6 );
 
 {
     my(%cvs_bin_of);
