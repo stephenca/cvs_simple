@@ -20,6 +20,3 @@ t/08_status.t
 t/99_cleanup.t
 t/pod.t
 t/pod-coverage.t
-t/cleanup.pl
-t/cvs.pl
-
