@@ -1,5 +1,5 @@
 Revision history for Perl extension Cvs::Simple.
-0.6   Wed Feb 06 11:56:00 2008
+0.06   Wed Feb 06 11:56:00 2008
     - Fix version number.
     - Remove some redundant test file.
 
