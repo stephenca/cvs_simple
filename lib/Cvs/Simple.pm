@@ -45,10 +45,11 @@ use warnings;
 use Carp;
 use Class::Std::Utils;
 use Cvs::Simple::Config;
-use FileHandle;
+use IO::Lines;
+use IO::Pipe;
 
 use vars  qw($VERSION);
-use version; $VERSION = version->new( 0.06 );
+use version; $VERSION = version->new( 0.07 );
 
 {
     my(%cvs_bin_of);
@@ -95,7 +96,7 @@ use version; $VERSION = version->new( 0.06 );
         my($func) = shift;
 
         # If 'hook' is not supplied, callback is global, i.e. apply to all.
-        $hook ||= 'All';
+        defined($hook) || ($hook = 'All');
 
         unless(Cvs::Simple::Hook::permitted($hook)) {
             croak "Invalid hook type in callback: $hook.";
@@ -137,6 +138,20 @@ sub cvs_bin {
     return $cvs_bin_of{ident $self};
 }
 
+sub _pipe {
+    my($cmd) = shift;
+
+    my($fh) = IO::Pipe->new;
+    $fh->reader( "$cmd 2>&1" );
+    defined($fh) or croak "Failed to open $cmd:$!";
+    my($SH) = IO::Lines->new();
+    $SH->print( $fh->getlines );
+
+    $fh->close or carp "Close failed:$!";
+
+    return $SH;
+}
+
 sub cvs_cmd {
     my($self) = shift;
     my($cmd)  = shift;
@@ -147,26 +162,18 @@ sub cvs_cmd {
 
     my($hook)= Cvs::Simple::Hook::get_hook $cmd;
 
-    my($fh) = FileHandle->new("$cmd 2>&1 |");
-    defined($fh) or croak "Failed to open $cmd:$!";
+    my($fh) = _pipe( "$cmd 2>&1" );
 
-    while(<$fh>) {
-        if(defined($hook)) {
-            if($self->callback($hook)) {
-                $self->callback($hook)->($cmd,$_);
-            } 
-            else {
-                print STDOUT $_;
-            }
+    my($hookfunc) = $self->callback($hook) ||
+                    $self->callback();
+
+    if(defined( $hookfunc )) {
+        while(defined($_=$fh->getline)) {
+            $hookfunc->( $cmd, $_ );
         }
-        else {
-            if($self->callback('All')) {
-                $self->callback('All')->($cmd, $_);
-            }
-            else {
-                print STDOUT $_;
-            }
-        }
+    }
+    else {
+        print STDOUT $fh->getlines;
     }
 
     $fh->close;
