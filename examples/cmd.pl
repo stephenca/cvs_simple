@@ -1,15 +1,27 @@
 #!/usr/bin/perl
-use lib qw(../lib);
-use Cvs::Simple::Cmd;
+use strict;
+use warnings;
+use Cvs::Simple;
+use Cwd;
+# Cvs_Test is included with the Cvs::Simple distribution.
+# cvs_make inits a cvs repository, and cvs_clean removes it.
+require Cvs_Test;
 
-cvs init;
-cvs checkout test
-cvs -d :ext: update .
-cvs -d :ext: update -jOLD -jNEW file.pl
-cvs diff -c file.pl
-cvs diff -c -rTAG1 -rTAG2 file.pl
+my($cwd) = getcwd;
+Cvs_Test::cvs_make( $cwd ); 
+my($cvs) = Cvs::Simple->new();
+$cvs->add( 'testfile.txt' );
+$cvs->commit();
+#
+# ...
+#
+$cvs->update();
+$cvs->merge( 1.2, 1.3, 'testfile.txt' );
+$cvs->commit();
+$cvs->status();
 
-cvs diff -u file.pl
+Cvs_Test::cvs_clean();
+
 exit;
 
 __END__
