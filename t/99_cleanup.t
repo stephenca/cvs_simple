@@ -4,7 +4,7 @@ use warnings;
 use Cwd;
 use File::Spec::Functions qw(catdir);
 use Test::More qw(no_plan);
-require Cvs_Test;
+use Cvs_Test;
 
 BEGIN {
     use_ok('Cvs::Simple');
@@ -16,7 +16,7 @@ unless ($cwd=~m{/t\z}) {
 }
 chdir($cwd) or die "Can\'t chdir to $cwd:$!";
 
-Cvs_Test::cvs_clean($cwd);
+Cvs_Test::cvs_clean $cwd;
 
 exit;
 
