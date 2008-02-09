@@ -2,9 +2,9 @@
 use strict;
 use warnings;
 use File::Copy;
-use File::Spec::Functions qw(catfile catdir curdir tmpdir splitdir rel2abs);
-#use Test::More tests=>10;
-use Test::More qw(no_plan);
+use File::Spec::Functions qw(catfile catdir   curdir 
+                             tmpdir  splitdir rel2abs);
+use Test::More tests=>11;
 use Cvs::Simple;
 use Cwd;
 require Cvs_Test;
