@@ -35,9 +35,9 @@ sub cvs_make ($) {
     return;
 }
 
-sub cvs_clean () {
+sub cvs_clean (;$) {
 
-    my($cwd) = rel2abs(curdir());
+    my($cwd) = shift || rel2abs(curdir());
     unless((splitdir($cwd))[-1] eq 't') {
         chdir(catdir($cwd, 't'))
             or die "Failed to chdir:$!";
