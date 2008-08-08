@@ -93,6 +93,7 @@ WriteMakefile(
             'Test::Pod'           => 1.14,
             'Test::Pod::Coverage' => 1.04,
             'Test::More'          => 0,
+            'Test::NoWarnings'    => 0,
     },
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
       (ABSTRACT_FROM  => 'lib/Cvs/Simple.pm', # retrieve abstract from module

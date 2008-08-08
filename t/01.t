@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests=>4;
+use Test::More tests=>5;
+use Test::NoWarnings;
 
 BEGIN {
     use_ok('Cvs::Simple');

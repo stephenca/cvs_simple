@@ -4,7 +4,8 @@ use warnings;
 use File::Copy;
 use File::Spec::Functions qw(catfile catdir   curdir 
                              tmpdir  splitdir rel2abs);
-use Test::More tests=>11;
+use Test::More tests=>12;
+use Test::NoWarnings;
 use Cvs::Simple;
 use Cwd;
 require Cvs_Test;

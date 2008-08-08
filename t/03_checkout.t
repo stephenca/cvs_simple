@@ -1,7 +1,8 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-use Test::More tests=>5;
+use Test::More tests=>6;
+use Test::NoWarnings;
 use Cvs::Simple;
 
 my($cvs) = Cvs::Simple->new();

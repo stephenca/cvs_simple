@@ -2,7 +2,8 @@
 use strict;
 use warnings;
 use File::Spec;
-use Test::More tests=>5;
+use Test::More tests=>6;
+use Test::NoWarnings;
 use Cvs::Simple;
 
 {
