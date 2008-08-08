@@ -35,6 +35,7 @@ This module requires these other modules and libraries:
   Test::More
   Test::Pod
   Test::Pod::Coverage
+  Test::NoWarnings
 
 COPYRIGHT AND LICENCE
 
