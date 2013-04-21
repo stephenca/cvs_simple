@@ -1,14 +1,22 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
+
+use Directory::Scratch;
+
 use File::Copy;
 use File::Spec::Functions qw(catfile catdir   curdir 
                              tmpdir  splitdir rel2abs);
-use Test::More tests=>12;
-use Test::NoWarnings;
+
+use File::Which;
+use Test::Most;
+
 use Cvs::Simple;
 use Cwd;
+
 require Cvs_Test;
+
+my $cvs_bin = which('cvs');
 
 my($add_ok,$commit_ok,$update_ok,$merge_ok) = (0,0,0,0);
 my($add_callback) = sub {
@@ -36,7 +44,7 @@ my($update_callback) = sub {
     }
 };
 
-my($cvs) = Cvs::Simple->new();
+my($cvs) = Cvs::Simple->new((cvs_bin=>$cvs_bin));
 isa_ok($cvs,'Cvs::Simple');
 
 # Set our callbacks.  Note that the 'add' callback
@@ -45,7 +53,7 @@ $cvs->callback(update   => $add_callback   );
 $cvs->callback(commit   => $commit_callback);
 
 SKIP: {
-skip(q{Cvs not in $cvs->cvs_bin}, 7 ) unless (-x $cvs->cvs_bin );
+skip(q{Cvs not in $cvs->cvs_bin}, 7 ) unless (defined($cvs->cvs_bin) && -x $cvs->cvs_bin );
 
 my($cwd) = getcwd();
 
@@ -53,8 +61,9 @@ unless((splitdir($cwd))[-1] eq 't') {
     $cwd = catfile($cwd, 't');
 }
 chdir($cwd) or die "Can\'t chdir to $cwd:$!";
+my $basedir = $cwd;
 
-my($cvs_bin) = Cvs::Simple::Config::CVS_BIN;
+my($cvs_bin) = $cvs_bin;
 Cvs_Test::cvs_clean(rel2abs($cwd));
 Cvs_Test::cvs_make(rel2abs($cwd));
 
@@ -65,6 +74,11 @@ $cvs->external($repos);
 is($cvs->external, $repos);
 
 my($basefile) = 'add_test_01.txt';
+
+my $tmpdir = Directory::Scratch->new();
+
+chdir("$tmpdir")
+  or die("Cannot chdir to tmp $tmpdir:$!");
 
 diag('Add a file');
 $cvs->co('Add');
@@ -112,19 +126,20 @@ $cvs->update('add_test_03.txt');
 
 is($update_ok,2);
 
+chdir($basedir)
+  or die("Cannot chdir to $basedir:$!");
+
 } # End of skip
 
 {
-local($@);
-eval{$cvs->add()};
-like($@, qr/Syntax:/);
+    local($@);
+    eval{$cvs->add()};
+    like($@, qr/Syntax:/);
 }
 {
-local($@);
-eval{$cvs->add_bin()};
-like($@, qr/Syntax:/);
+    local($@);
+    eval{$cvs->add_bin()};
+    like($@, qr/Syntax:/);
 }
 
-exit;
-__END__
-
+done_testing;

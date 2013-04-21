@@ -1,14 +1,14 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 use strict;
 use warnings;
-use Test::More tests=>5;
-use Test::NoWarnings;
+
+use Test::Most;
 
 BEGIN {
     use_ok('Cvs::Simple');
-    use_ok('Cvs::Simple::Config');
 }
 
+local($ENV{CVS_SIMPLE_BIN}) = '/usr/bin/cvs';
 my($cvs) = Cvs::Simple->new();
 isa_ok($cvs,'Cvs::Simple');
 
@@ -35,5 +35,4 @@ my(@methods) = qw(
 
 can_ok($cvs,@methods);
 
-exit;
-
+done_testing;

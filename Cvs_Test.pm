@@ -1,12 +1,12 @@
 package Cvs_Test;
 use strict;
 use warnings;
-use Cvs::Simple::Config;
 use Cwd;
 use File::Path;
 use File::Spec::Functions qw(curdir catdir splitdir rel2abs tmpdir updir);
+use File::Which;
 
-sub CVSBIN () { return Cvs::Simple::Config::CVS_BIN        }
+sub CVSBIN () { which('cvs');                              }
 sub CVSDIR () { return tmpdir()                            }
 sub TMPL   () { 'repository'                               }
 sub REP    () { 'cvsdir'                                   }
