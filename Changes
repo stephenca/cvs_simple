@@ -1,4 +1,8 @@
 Revision history for Perl extension Cvs::Simple.
+0.07_01   Mon Apr 22 16:45:14 2013 +0100
+    - Replace generated config file with env vars or constructor arguments.
+      (Stephen Cardie)
+
 0.07   Sat Feb 09 23:25:00 2008
     - Use IO::Pipe to generate output from cvs command, 
       and IO::Lines to pass back to callback.

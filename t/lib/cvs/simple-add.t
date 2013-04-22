@@ -14,7 +14,8 @@ use Test::Most;
 use Cvs::Simple;
 use Cwd;
 
-require Cvs_Test;
+use lib qw(t/lib);
+use Cvs_Test;
 
 my $cvs_bin = which('cvs');
 

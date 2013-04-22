@@ -15,7 +15,8 @@ use Cwd;
 
 use Scalar::Util qw();
 
-require Cvs_Test;
+use lib qw(t/lib);
+use Cvs_Test;
 
 my($status_ok) = 0;
 my(@stat_line);

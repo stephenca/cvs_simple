@@ -1,10 +1,14 @@
 package Cvs_Test;
 use strict;
 use warnings;
+
 use Cwd;
+
 use File::Path;
 use File::Spec::Functions qw(curdir catdir splitdir rel2abs tmpdir updir);
 use File::Which;
+
+# VERSION
 
 sub CVSBIN () { which('cvs');                              }
 sub CVSDIR () { return tmpdir()                            }
@@ -52,7 +56,5 @@ sub cvs_clean (;$) {
 }
 
 1;
-
-__END__
 
 

@@ -4,7 +4,7 @@ Cvs::Simple - Perl interface to cvs.
 
 # VERSION
 
-version 0.8\_001
+version 0.7\_01
 
 # SYNOPSIS
 
@@ -172,10 +172,6 @@ Equivalent to `cvs status -v`.
 
 None by default.
 
-# NAME
-
-Cvs::Simple - Perl interface to cvs
-
 # LIMITATIONS AND CAVEATS
 
 - 1\. Note that `Cvs::Simple` carries out no input validation; everything is
@@ -197,18 +193,6 @@ tests are required generally.
 # SEE ALSO
 
 cvs(1), [Cvs](http://search.cpan.org/perldoc?Cvs), [VCS::Cvs](http://search.cpan.org/perldoc?VCS::Cvs)
-
-# AUTHOR
-
-Stephen Cardie, <stephenca@ls26.net>
-
-# COPYRIGHT AND LICENSE
-
-Copyright (C) 2007,2008 by Stephen Cardie
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.8 or,
-at your option, any later version of Perl 5 you may have available.
 
 # AUTHOR
 
