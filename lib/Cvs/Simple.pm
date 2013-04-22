@@ -1,11 +1,19 @@
 package Cvs::Simple;
 use strict;
 use warnings;
+
 use Carp;
 use Class::Std::Utils;
-use Cvs::Simple::Config;
+use Cvs::Simple::Hook;
+
+use File::Which       qw(which);
+
 use IO::Lines;
 use IO::Pipe;
+
+use Module::Runtime   qw(require_module);
+
+use Try::Tiny;
 
 # Version set by dist.ini; do not change here.
 # VERSION
@@ -16,7 +24,8 @@ use IO::Pipe;
     my(%callback_of);
     my(%repos_of);
 
-    sub new {
+    sub new 
+    {
         my($class) = shift;
         my($self) = bless anon_scalar(), $class;
         $self->_init(@_);
@@ -31,14 +40,40 @@ use IO::Pipe;
             $self->cvs_bin($args{cvs_bin});
         }
         else {
-           $self->cvs_bin(Cvs::Simple::Config::CVS_BIN);
+            if(defined($ENV{CVS_SIMPLE_BIN})) {
+                $self->cvs_bin($ENV{CVS_SIMPLE_BIN});
+            } else {
+                my $m = 
+                    try { require_module('Cvs::Simple::Config') }
+                    catch { undef };
+                if(defined($m)) {
+                    my $cvs_bin = 
+                        try   { Cvs::Simple::Config::CVS_BIN() }
+                        catch { warn($_); undef; };
+                    if(defined($cvs_bin)) {
+                        $self->cvs_bin( $cvs_bin );
+                    } else {
+                        croak("csv binary location not specified and cannot find.");
+                    }
+
+                    my $ext = 
+                    try { Cvs::Simple::Config::EXTERNAL() }
+                    catch { undef; };
+                    if(defined($ext)) {
+                        $self->external( $ext );
+                    }
+                } elsif ( my $exe_path = which('cvs') ) {
+                    $self->cvs_bin( $exe_path );
+                } else {
+                    croak("csv binary location not specified and cannot find.");
+                }
+            }
         }
 
-        if(exists $args{external}) {
+        if(exists($args{external})) {
             $self->external($args{external});
-        }
-        elsif (Cvs::Simple::Config::EXTERNAL) {
-            $self->external(Cvs::Simple::Config::EXTERNAL);
+        } elsif (defined($ENV{CVS_SIMPLE_EXTERNAL})) {
+            $self->external($ENV{CVS_SIMPLE_EXTERNAL});
         }
         else {
             ();
@@ -70,8 +105,7 @@ use IO::Pipe;
 
         if(exists $callback_of{ident $self}{$hook}) {
             return $callback_of{ident $self}{$hook};
-        }
-        else {
+        } else {
             return;
         }
     }
@@ -390,10 +424,6 @@ sub update {
 __END__
 =pod
 
-=head1 NAME
-
-Cvs::Simple - Perl interface to cvs
-
 =head1 SYNOPSIS
 
   use Cvs::Simple;
@@ -618,17 +648,5 @@ tests are required generally.
 =head1 SEE ALSO
 
 cvs(1), L<Cvs>, L<VCS::Cvs>
-
-=head1 AUTHOR
-
-Stephen Cardie, E<lt>stephenca@ls26.netE<gt>
-
-=head1 COPYRIGHT AND LICENSE
-
-Copyright (C) 2007,2008 by Stephen Cardie
-
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself, either Perl version 5.8.8 or,
-at your option, any later version of Perl 5 you may have available.
 
 =cut
