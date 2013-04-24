@@ -1,0 +1,41 @@
+Revision history for Perl extension Cvs::Simple.
+0.07_02   Wed Apr 24 10:34:40 2013 +0100
+    - Fix test fails due to incorrect method call in test script. (Stephen
+      Cardie)
+
+0.07_01   Mon Apr 22 16:45:14 2013 +0100
+    - Replace generated config file with env vars or constructor arguments.
+      (Stephen Cardie)
+
+0.07   Sat Feb 09 23:25:00 2008
+    - Use IO::Pipe to generate output from cvs command, 
+      and IO::Lines to pass back to callback.
+    - Makefile.PL now detects existing Cvs::Simple::Config and gives option to
+      over-write or keep.
+
+0.06   Wed Feb 06 11:56:00 2008
+    - Fix version number.
+    - Remove some redundant test files.
+
+0.0.5  Tue Jan 29 15:56:00 2008
+    - Move to 'version' pragma version numbering
+    - Improved t/pod-coverage.t
+
+0.04  Mon Oct 29 11:41:00 2007
+    - Fixed copyright notice
+    - Added POD to Simple/Config.pm
+    - Use File::Spec::Functions in tests.
+    - Eliminate shell scripts in tests.
+
+0.03  Mon Oct 22 15:15:00 2007
+    - Now uses Class::Std::Utils (aka "inside-out" objects")
+    - More tests; added pod.t and pod-coverage.t
+    - Fixed a bug with default (non-callback) output.
+
+0.02  Sat Jun 16 10:31:23 2007
+    - Amended tests for non-availability of cvs binary.
+
+0.01  Sat Jun  9 21:56:32 2007
+	- original version; created by h2xs 1.23 with options
+		-AX -n Cvs::Simple
+

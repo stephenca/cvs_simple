@@ -1,0 +1,79 @@
+{
+   "abstract" : "Perl interface to cvs.",
+   "author" : [
+      "Stephen Cardie <stephenca@ls26.net>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.300023, CPAN::Meta::Converter version 2.130880",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Cvs-Simple",
+   "no_index" : {
+      "directory" : [
+         "t",
+         "xt",
+         "examples",
+         "corpus"
+      ],
+      "package" : [
+         "DB"
+      ]
+   },
+   "prereqs" : {
+      "build" : {
+         "requires" : {
+            "Cwd" : "0",
+            "Directory::Scratch" : "0",
+            "File::Copy" : "0",
+            "File::Find" : "0",
+            "File::Path" : "0",
+            "File::Spec" : "0",
+            "File::Spec::Functions" : "0",
+            "File::Temp" : "0",
+            "Scalar::Util" : "0",
+            "Test::More" : "0",
+            "Test::Most" : "0"
+         }
+      },
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.30"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "Carp" : "0",
+            "Class::Std::Utils" : "0",
+            "File::Which" : "0",
+            "IO::Lines" : "0",
+            "IO::Pipe" : "0",
+            "Module::Runtime" : "0",
+            "Try::Tiny" : "0",
+            "strict" : "0",
+            "warnings" : "0"
+         }
+      }
+   },
+   "provides" : {
+      "Cvs::Simple" : {
+         "file" : "lib/Cvs/Simple.pm",
+         "version" : "0.07_02"
+      },
+      "Cvs::Simple::Hook" : {
+         "file" : "lib/Cvs/Simple/Hook.pm",
+         "version" : "0.07_02"
+      }
+   },
+   "release_status" : "testing",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=Cvs-Simple"
+      }
+   },
+   "version" : "0.07_02"
+}
