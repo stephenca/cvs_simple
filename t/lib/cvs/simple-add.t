@@ -45,7 +45,10 @@ my($update_callback) = sub {
     }
 };
 
-my($cvs) = Cvs::Simple->new((cvs_bin=>$cvs_bin));
+my $cvs;
+lives_ok { $cvs = Cvs::Simple->new((cvs_bin=>$cvs_bin)) }
+'Instantiate Cvs::Simple';
+
 isa_ok($cvs,'Cvs::Simple');
 
 # Set our callbacks.  Note that the 'add' callback
@@ -72,7 +75,7 @@ my($testdir) = tmpdir();
 my($repos)   = catdir($testdir, 'cvsdir');
 $cvs->external($repos);
 
-is($cvs->external, $repos);
+is($cvs->external, $repos, 'Call to external()');
 
 my($basefile) = 'add_test_01.txt';
 
@@ -90,29 +93,29 @@ File::Copy::copy(
 chdir('Add') or die $!;
 $cvs->add('add_test_02.txt');
 $cvs->up2date;
-is($add_ok,1);
+is($add_ok,1,'Call to up2date()');
 
 diag('Simple commit.');
 $cvs->commit;
-is($commit_ok,1);
+is($commit_ok,1,'Call to commit() s');
 
 diag('File list commit');
 File::Copy::copy($basefile, 'add_test_03.txt')
     or die "Can\'t copy files";
 $cvs->add   (  'add_test_03.txt'  );
 $cvs->commit([ 'add_test_03.txt' ]);
-is($commit_ok,2);
+is($commit_ok,2,'Call to commit()');
 
 diag('Force revision number');
 File::Copy::copy($basefile, 'add_test_04.txt')
     or die "Can\'t copy files:$!";
 $cvs->add('add_test_04.txt');
 $cvs->commit('2.0', [ 'add_test_04.txt' ]);
-is($commit_ok,3);
+is($commit_ok,3,'Call to commit()');
 
 diag('Force revision on all.');
 $cvs->commit('3.0');
-is($commit_ok,7);
+is($commit_ok,7,'Call to commit()');
 
 # Remove a file and do an update.
 unlink('add_test_04.txt');
@@ -120,12 +123,12 @@ $cvs->unset_callback('update');
 $cvs->callback(update => $update_callback);
 $cvs->update;
 
-is($update_ok,1);
+is($update_ok,1,'Call to update()');
 
 unlink('add_test_03.txt');
 $cvs->update('add_test_03.txt');
 
-is($update_ok,2);
+is($update_ok,2,'Call to update()');
 
 chdir($basedir)
   or die("Cannot chdir to $basedir:$!");
@@ -135,12 +138,12 @@ chdir($basedir)
 {
     local($@);
     eval{$cvs->add()};
-    like($@, qr/Syntax:/);
+    like($@, qr/Syntax:/,'Empty add() generates syntax error.');
 }
 {
     local($@);
     eval{$cvs->add_bin()};
-    like($@, qr/Syntax:/);
+    like($@, qr/Syntax:/,'Empty add_bin generates syntax error');
 }
 
 done_testing;
