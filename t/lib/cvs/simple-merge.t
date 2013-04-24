@@ -5,7 +5,7 @@ use warnings;
 use Test::Most;
 use Cvs::Simple;
 
-my($cvs) = Cvs::Simple->new((csv_bin=>'/tmp/foobar'));
+my($cvs) = Cvs::Simple->new((cvs_bin=>'/tmp/foobar'));
 
 isa_ok($cvs,'Cvs::Simple');
 

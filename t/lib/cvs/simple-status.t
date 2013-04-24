@@ -40,7 +40,7 @@ $cvs->callback(status   => $status_callback   );
 is(Scalar::Util::reftype($cvs->callback('status')), 'CODE','Callback OK');
 
 SKIP: {
-    skip(q{Cvs not in $cvs->cvs_bin}, 1 ) unless (-x $cvs->cvs_bin );
+    skip(q{Cvs not in $cvs->cvs_bin}, 1 ) unless (defined($cvs->cvs_bin) && -x $cvs->cvs_bin);
 
     my($cwd) = getcwd();
 

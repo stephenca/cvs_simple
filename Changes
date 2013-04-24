@@ -1,4 +1,8 @@
 Revision history for Perl extension Cvs::Simple.
+0.07_02   Wed Apr 24 10:34:40 2013 +0100
+    - Fix test fails due to incorrect method call in test script. (Stephen
+      Cardie)
+
 0.07_01   Mon Apr 22 16:45:14 2013 +0100
     - Replace generated config file with env vars or constructor arguments.
       (Stephen Cardie)
