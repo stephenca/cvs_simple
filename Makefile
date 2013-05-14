@@ -13,14 +13,14 @@
 
 #     ABSTRACT => q[Perl interface to cvs.]
 #     AUTHOR => [q[Stephen Cardie <stephenca@ls26.net>]]
-#     BUILD_REQUIRES => { Scalar::Util=>q[0], File::Copy=>q[0], Directory::Scratch=>q[0], File::Spec=>q[0], Test::More=>q[0], File::Find=>q[0], Test::Most=>q[0], File::Temp=>q[0], File::Path=>q[0], File::Spec::Functions=>q[0], Cwd=>q[0] }
+#     BUILD_REQUIRES => { warnings=>q[0], File::Copy=>q[0], Directory::Scratch=>q[0], File::Spec=>q[0], strict=>q[0], Test::More=>q[0], File::Find=>q[0], Test::Most=>q[0], File::Temp=>q[0], File::Path=>q[0], File::Spec::Functions=>q[0], Cwd=>q[0] }
 #     CONFIGURE_REQUIRES => { ExtUtils::MakeMaker=>q[6.30] }
 #     DISTNAME => q[Cvs-Simple]
 #     EXE_FILES => []
 #     LICENSE => q[perl]
 #     NAME => q[Cvs::Simple]
-#     PREREQ_PM => { Scalar::Util=>q[0], Directory::Scratch=>q[0], IO::Pipe=>q[0], File::Spec=>q[0], File::Which=>q[0], IO::Lines=>q[0], Module::Runtime=>q[0], File::Find=>q[0], Test::Most=>q[0], File::Path=>q[0], File::Spec::Functions=>q[0], warnings=>q[0], Try::Tiny=>q[0], File::Copy=>q[0], Carp=>q[0], strict=>q[0], Test::More=>q[0], Class::Std::Utils=>q[0], File::Temp=>q[0], Cwd=>q[0] }
-#     VERSION => q[0.07_02]
+#     PREREQ_PM => { Scalar::Util=>q[0], Directory::Scratch=>q[0], IO::Pipe=>q[0], File::Spec=>q[0], File::Which=>q[0], IO::Lines=>q[0], Module::Runtime=>q[0], File::Find=>q[0], Test::Most=>q[0], File::Path=>q[0], File::Spec::Functions=>q[0], Try::Tiny=>q[0], warnings=>q[0], File::Copy=>q[0], Carp=>q[0], strict=>q[0], Test::More=>q[0], Class::Std::Utils=>q[0], File::Temp=>q[0], common::sense=>q[0], Cwd=>q[0] }
+#     VERSION => q[0.07_03]
 #     test => { TESTS=>q[t/*.t t/lib/cvs/*.t] }
 
 # --- MakeMaker post_initialize section:
@@ -60,11 +60,11 @@ DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
 NAME = Cvs::Simple
 NAME_SYM = Cvs_Simple
-VERSION = 0.07_02
+VERSION = 0.07_03
 VERSION_MACRO = VERSION
-VERSION_SYM = 0_07_02
+VERSION_SYM = 0_07_03
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 0.07_02
+XS_VERSION = 0.07_03
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib/arch
@@ -262,7 +262,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = Cvs-Simple
-DISTVNAME = Cvs-Simple-0.07_02
+DISTVNAME = Cvs-Simple-0.07_03
 
 
 # --- MakeMaker macro section:
@@ -497,9 +497,10 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '  File::Spec: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  File::Spec::Functions: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  File::Temp: 0' >> META_new.yml
-	$(NOECHO) $(ECHO) '  Scalar::Util: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Test::More: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Test::Most: 0' >> META_new.yml
+	$(NOECHO) $(ECHO) '  strict: 0' >> META_new.yml
+	$(NOECHO) $(ECHO) '  warnings: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) 'configure_requires:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  ExtUtils::MakeMaker: 6.30' >> META_new.yml
 	$(NOECHO) $(ECHO) 'dynamic_config: 1' >> META_new.yml
@@ -520,10 +521,10 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '  IO::Lines: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  IO::Pipe: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Module::Runtime: 0' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Scalar::Util: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Try::Tiny: 0' >> META_new.yml
-	$(NOECHO) $(ECHO) '  strict: 0' >> META_new.yml
-	$(NOECHO) $(ECHO) '  warnings: 0' >> META_new.yml
-	$(NOECHO) $(ECHO) 'version: 0.07_02' >> META_new.yml
+	$(NOECHO) $(ECHO) '  common::sense: 0' >> META_new.yml
+	$(NOECHO) $(ECHO) 'version: 0.07_03' >> META_new.yml
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	$(NOECHO) $(ECHO) Generating META.json
 	$(NOECHO) $(ECHO) '{' > META_new.json
@@ -558,9 +559,10 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '            "File::Spec" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "File::Spec::Functions" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "File::Temp" : "0",' >> META_new.json
-	$(NOECHO) $(ECHO) '            "Scalar::Util" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Test::More" : "0",' >> META_new.json
-	$(NOECHO) $(ECHO) '            "Test::Most" : "0"' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Test::Most" : "0",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "strict" : "0",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "warnings" : "0"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
 	$(NOECHO) $(ECHO) '      },' >> META_new.json
 	$(NOECHO) $(ECHO) '      "configure" : {' >> META_new.json
@@ -576,14 +578,14 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '            "IO::Lines" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "IO::Pipe" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Module::Runtime" : "0",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Scalar::Util" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Try::Tiny" : "0",' >> META_new.json
-	$(NOECHO) $(ECHO) '            "strict" : "0",' >> META_new.json
-	$(NOECHO) $(ECHO) '            "warnings" : "0"' >> META_new.json
+	$(NOECHO) $(ECHO) '            "common::sense" : "0"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
 	$(NOECHO) $(ECHO) '      }' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
 	$(NOECHO) $(ECHO) '   "release_status" : "testing",' >> META_new.json
-	$(NOECHO) $(ECHO) '   "version" : "0.07_02"' >> META_new.json
+	$(NOECHO) $(ECHO) '   "version" : "0.07_03"' >> META_new.json
 	$(NOECHO) $(ECHO) '}' >> META_new.json
 	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
 
@@ -889,9 +891,9 @@ ppd :
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="IO::Lines" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="IO::Pipe" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Module::Runtime" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Scalar::Util" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Try::Tiny" />' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="strict::" />' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="warnings::" />' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="common::sense" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-5.16" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> $(DISTNAME).ppd

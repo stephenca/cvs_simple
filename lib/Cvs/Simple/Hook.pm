@@ -1,9 +1,8 @@
 package Cvs::Simple::Hook;
-use strict;
-use warnings;
+use common::sense;
 
 # Version set by dist.ini; do not change here.
-our $VERSION = '0.07_02'; # VERSION
+our $VERSION = '0.07_03'; # VERSION
 
 
 {
@@ -20,7 +19,7 @@ our $VERSION = '0.07_02'; # VERSION
 
     sub PERM_REQ () 
     {
-        my($patt) = join '|' => keys %PERMITTED;
+        my $patt = join '|' => keys %PERMITTED;
         return qr/$patt/;
     }
 
@@ -33,9 +32,9 @@ our $VERSION = '0.07_02'; # VERSION
 
     sub get_hook ($) 
     {
-        my($cmd)      = shift;
+        my $cmd      = shift;
 
-        my($PERM_REQ) = PERM_REQ;
+        my $PERM_REQ = PERM_REQ;
 
         if(($cmd)=~/\b($PERM_REQ)\b/) {
             return $1;
@@ -59,7 +58,7 @@ Cvs::Simple::Hook - limits allowed cvs commands.
 
 =head1 VERSION
 
-version 0.07_02
+version 0.07_03
 
 =head1 DESCRIPTION
 

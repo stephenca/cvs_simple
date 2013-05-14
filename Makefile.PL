@@ -20,9 +20,10 @@ my %WriteMakefileArgs = (
     "File::Spec" => 0,
     "File::Spec::Functions" => 0,
     "File::Temp" => 0,
-    "Scalar::Util" => 0,
     "Test::More" => 0,
-    "Test::Most" => 0
+    "Test::Most" => 0,
+    "strict" => 0,
+    "warnings" => 0
   },
   "CONFIGURE_REQUIRES" => {
     "ExtUtils::MakeMaker" => "6.30"
@@ -38,11 +39,11 @@ my %WriteMakefileArgs = (
     "IO::Lines" => 0,
     "IO::Pipe" => 0,
     "Module::Runtime" => 0,
+    "Scalar::Util" => 0,
     "Try::Tiny" => 0,
-    "strict" => 0,
-    "warnings" => 0
+    "common::sense" => 0
   },
-  "VERSION" => "0.07_02",
+  "VERSION" => "0.07_03",
   "test" => {
     "TESTS" => "t/*.t t/lib/cvs/*.t"
   }

@@ -1,6 +1,5 @@
 package Cvs::Simple;
-use strict;
-use warnings;
+use common::sense;
 
 use Carp;
 use Class::Std::Utils;
@@ -13,10 +12,11 @@ use IO::Pipe;
 
 use Module::Runtime   qw(require_module);
 
+use Scalar::Util      qw(reftype);
 use Try::Tiny;
 
 # Version set by dist.ini; do not change here.
-our $VERSION = '0.07_02'; # VERSION
+our $VERSION = '0.07_03'; # VERSION
 
 {
     my(%cvs_bin_of);
@@ -26,8 +26,8 @@ our $VERSION = '0.07_02'; # VERSION
 
     sub new 
     {
-        my($class) = shift;
-        my($self) = bless anon_scalar(), $class;
+        my $class = shift;
+        my $self = bless(anon_scalar(), $class);
         $self->_init(@_);
         return $self;
     }
@@ -87,9 +87,9 @@ our $VERSION = '0.07_02'; # VERSION
 
     sub callback 
     {
-        my($self) = shift;
-        my($hook) = shift;
-        my($func) = shift;
+        my $self = shift;
+        my $hook = shift;
+        my $func = shift;
 
         # If 'hook' is not supplied, callback is global, i.e. apply to all.
         defined($hook) || ($hook = 'All');
@@ -99,7 +99,7 @@ our $VERSION = '0.07_02'; # VERSION
         }
 
         if(defined($func)) {
-            UNIVERSAL::isa(($func), 'CODE') or do {
+            (reftype($func) eq 'CODE') or do {
                 croak "Argument supplied to callback() should be a coderef.";
             };
             $callback_of{ident $self}{$hook} = $func;
@@ -114,8 +114,8 @@ our $VERSION = '0.07_02'; # VERSION
 
     sub unset_callback 
     {
-        my($self) = shift;
-        my($hook) = shift;
+        my $self = shift;
+        my $hook = shift;
 
         unless(Cvs::Simple::Hook::permitted($hook)) {
             croak "Invalid hook type in unset_callback: $hook.";
@@ -126,7 +126,7 @@ our $VERSION = '0.07_02'; # VERSION
 
     sub cvs_bin 
     {
-        my($self) = shift;
+        my $self = shift;
 
         if(@_==1) {
             $cvs_bin_of{ident $self} = shift; 
@@ -137,9 +137,10 @@ our $VERSION = '0.07_02'; # VERSION
 
     sub _pipe 
     {
-        my($cmd) = shift;
+        my $self = shift;
+        my $cmd = shift;
 
-        my($fh) = IO::Pipe->new;
+        my $fh = IO::Pipe->new;
         $fh->reader( "$cmd 2>&1" );
         defined($fh) or croak "Failed to open $cmd:$!";
         my($SH) = IO::Lines->new();
@@ -152,16 +153,16 @@ our $VERSION = '0.07_02'; # VERSION
 
     sub cvs_cmd 
     {
-        my($self) = shift;
-        my($cmd)  = shift;
+        my $self = shift;
+        my $cmd  = shift;
 
         croak "Syntax: cvs_cmd(cmd)" unless (defined($cmd) && $cmd);
 
         STDOUT->autoflush;
 
-        my($hook)= Cvs::Simple::Hook::get_hook $cmd;
+        my $hook = Cvs::Simple::Hook::get_hook $cmd;
 
-        my($fh) = _pipe( "$cmd 2>&1" );
+        my $fh = $self->_pipe( "$cmd 2>&1" );
 
         my($hookfunc) = $self->callback($hook) ||
         $self->callback();
@@ -182,13 +183,13 @@ our $VERSION = '0.07_02'; # VERSION
     sub merge 
     {
 # merge(old_rev,new_rev,file);
-        my($self) = shift;
-        my(@args) = @_;
+        my $self = shift;
+        my @args = @_;
 
         croak "Syntax: merge(old_rev,new_rev,file)"
         unless (@args && scalar(@args)==3);
 
-        my($cmd) = $self->_cmd('-q update');
+        my $cmd = $self->_cmd('-q update');
         $cmd .= sprintf("-j%s -j%s %s", @args);
 
         return $self->cvs_cmd($cmd);
@@ -203,8 +204,8 @@ our $VERSION = '0.07_02'; # VERSION
     {
 # Revert to previous revision of a file, i.e. backout/undo change(s).
 # backout(current_rev,revert_rev,file);
-        my($self) = shift;
-        my(@args) = @_;
+        my $self = shift;
+        my @args = @_;
 
         unless (@args && scalar(@args)==3) {
             croak <<SYN;
@@ -218,7 +219,7 @@ SYN
 
     sub external 
     {
-        my($self)  = shift;
+        my $self = shift;
 
         if(@_==1) {
             $repos_of{ident $self} = shift;
@@ -228,13 +229,14 @@ SYN
 
     sub _cmd 
     {
-        my($self) = shift;
-        my($type) = shift;
+        my $self = shift;
+        my $type = shift;
 
-        my($cvs)  = $self->cvs_bin;
+        my $cvs  = $self->cvs_bin;
 
-        my($cmd) = 
-        $self->external  ?   sprintf("%s -d %s %s ", $cvs,$self->external,$type)
+        my $cmd = 
+        $self->external  
+        ?   sprintf("%s -d %s %s ", $cvs,$self->external,$type)
         :   sprintf("%s %s ",       $cvs,$type);
 
         return $cmd;
@@ -244,12 +246,12 @@ SYN
     {
 #   Can only be called as:
 #    cvs add file1 [, .... , ]
-        my($self) = shift;
-        my(@args) = @_;
+        my $self = shift;
+        my @args = @_;
 
         croak "Syntax: add(file1, ...)" unless(@args);
 
-        my($cmd) = $self->_cmd('add');
+        my $cmd = $self->_cmd('add');
 
         if(@args) {
             $cmd .= join ' ' => @args;
@@ -308,7 +310,9 @@ SYN
     }
 
     sub _pattern {
-        return join '' => ('%s ' x @{$_[0]});
+        my $self = shift;
+        my @args = @_;
+        return join '' => ('%s ' x @{$args[0]});
     }
 
     sub commit {
@@ -317,23 +321,23 @@ SYN
 # commit([file_list])
 # commit(tag1)
 # commit(tag1, [file_list])
-        my($self) = shift;
-        my(@args) = @_;
+        my $self = shift;
+        my @args = @_;
 
-        my($cmd) = $self->_cmd('commit -m ""');
-        if(scalar(@args)==0) { # 'cvs commit -m ""'
+        my $cmd = $self->_cmd('commit -m ""');
+        if(@args==0) { # 'cvs commit -m ""'
             return $self->cvs_cmd($cmd);
         } elsif(@args==2) { # 'cvs commit -m "" -r TAG file(s)'
             croak "Syntax: commit([rev],[\@filelist])"
-            unless (UNIVERSAL::isa($args[1], 'ARRAY'));
-            my($pattern) = join '' => '-r %s ', _pattern($args[1]);
+              unless (reftype($args[1]) eq 'ARRAY');
+            my $pattern = join '' => '-r %s ', $self->_pattern($args[1]);
             $cmd .= sprintf($pattern, $args[0], @{$args[1]});
             return $self->cvs_cmd($cmd);
         } elsif(@args==1) { # 'cvs commit -m "" -r TAG' or 
             # 'cvs commit -m "" file(s)'
             my($pattern);
-            if(UNIVERSAL::isa($args[0], 'ARRAY')) {
-                $pattern = sprintf(_pattern($args[0]), @{$args[0]});
+            if(reftype($args[0]) eq 'ARRAY') {
+                $pattern = sprintf($self->_pattern($args[0]), @{$args[0]});
             }
             else {
                 $pattern = sprintf('-r %s', $args[0]);
@@ -369,7 +373,8 @@ SYN
 
         my($cmd) = $self->_cmd('diff -c');
 
-        $cmd .=     @args==3    ?   sprintf("-r %s -r %s %s", @args)
+        $cmd .=     @args==3    
+        ?   sprintf("-r %s -r %s %s", @args)
         :   sprintf("%s"            , @args);
 
         return $self->cvs_cmd($cmd);
@@ -447,7 +452,7 @@ Cvs::Simple - Perl interface to cvs.
 
 =head1 VERSION
 
-version 0.07_02
+version 0.07_03
 
 =head1 SYNOPSIS
 
