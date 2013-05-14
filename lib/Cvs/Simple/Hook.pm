@@ -1,6 +1,5 @@
 package Cvs::Simple::Hook;
-use strict;
-use warnings;
+use common::sense;
 
 # Version set by dist.ini; do not change here.
 # VERSION
@@ -35,7 +34,7 @@ This module lists which CVS commands may have a callback attached.
 
     sub PERM_REQ () 
     {
-        my($patt) = join '|' => keys %PERMITTED;
+        my $patt = join '|' => keys %PERMITTED;
         return qr/$patt/;
     }
 
@@ -59,9 +58,9 @@ key in %PERMITTED, or undef otherwise.
 
     sub get_hook ($) 
     {
-        my($cmd)      = shift;
+        my $cmd      = shift;
 
-        my($PERM_REQ) = PERM_REQ;
+        my $PERM_REQ = PERM_REQ;
 
         if(($cmd)=~/\b($PERM_REQ)\b/) {
             return $1;
