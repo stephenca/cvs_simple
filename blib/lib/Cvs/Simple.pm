@@ -1,6 +1,7 @@
 package Cvs::Simple;
 use common::sense;
 
+use Capture::Tiny     qw(capture_merged);
 use Carp;
 use Class::Std::Utils;
 use Cvs::Simple::Hook;
@@ -8,15 +9,15 @@ use Cvs::Simple::Hook;
 use File::Which       qw(which);
 
 use IO::Lines;
-use IO::Pipe;
 
 use Module::Runtime   qw(require_module);
 
 use Scalar::Util      qw(reftype);
+
 use Try::Tiny;
 
 # Version set by dist.ini; do not change here.
-our $VERSION = '0.07_03'; # VERSION
+our $VERSION = '0.07_04'; # VERSION
 
 {
     my(%cvs_bin_of);
@@ -34,13 +35,12 @@ our $VERSION = '0.07_03'; # VERSION
 
     sub _init 
     {
-        my($self) = shift;
-        my(%args) = @_;
+        my $self = shift;
+        my %args = @_;
 
         if(exists $args{cvs_bin}) {
             $self->cvs_bin($args{cvs_bin});
-        }
-        else {
+        } else {
             if(defined($ENV{CVS_SIMPLE_BIN})) {
                 $self->cvs_bin($ENV{CVS_SIMPLE_BIN});
             } else {
@@ -140,14 +140,28 @@ our $VERSION = '0.07_03'; # VERSION
         my $self = shift;
         my $cmd = shift;
 
-        my $fh = IO::Pipe->new;
-        $fh->reader( "$cmd 2>&1" );
-        defined($fh) or croak "Failed to open $cmd:$!";
-        my($SH) = IO::Lines->new();
-        $SH->print( $fh->getlines );
+        my ($output,@result) = capture_merged {
+            system( $cmd );
+        };
 
-        $fh->close or carp "Close failed:$!";
+        # 'man cvs' tells us that the return code from 'cvs diff' never
+        # indicates an error, so we only check this for other commands.
+        if($cmd =~ m{\bdiff\b}) {
+            if($output =~ m{unknown command}i) {
+                croak("Failed to execute diff command: $output");
+            } else {
+                ()
+            }
+        } else {
+            if($result[0] == 0 ) {
+                ();
+            } else {
+                croak("Failed to execute command: $output");
+            }
+        }
 
+        my $SH = IO::Lines->new();
+        $SH->print( $output );
         return $SH;
     }
 
@@ -162,7 +176,7 @@ our $VERSION = '0.07_03'; # VERSION
 
         my $hook = Cvs::Simple::Hook::get_hook $cmd;
 
-        my $fh = $self->_pipe( "$cmd 2>&1" );
+        my $fh = $self->_pipe( $cmd );
 
         my($hookfunc) = $self->callback($hook) ||
         $self->callback();
@@ -452,7 +466,7 @@ Cvs::Simple - Perl interface to cvs.
 
 =head1 VERSION
 
-version 0.07_03
+version 0.07_04
 
 =head1 SYNOPSIS
 

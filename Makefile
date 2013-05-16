@@ -19,8 +19,8 @@
 #     EXE_FILES => []
 #     LICENSE => q[perl]
 #     NAME => q[Cvs::Simple]
-#     PREREQ_PM => { Scalar::Util=>q[0], Directory::Scratch=>q[0], IO::Pipe=>q[0], File::Spec=>q[0], File::Which=>q[0], IO::Lines=>q[0], Module::Runtime=>q[0], File::Find=>q[0], Test::Most=>q[0], File::Path=>q[0], File::Spec::Functions=>q[0], Try::Tiny=>q[0], warnings=>q[0], File::Copy=>q[0], Carp=>q[0], strict=>q[0], Test::More=>q[0], Class::Std::Utils=>q[0], File::Temp=>q[0], common::sense=>q[0], Cwd=>q[0] }
-#     VERSION => q[0.07_03]
+#     PREREQ_PM => { Scalar::Util=>q[0], Directory::Scratch=>q[0], Capture::Tiny=>q[0], File::Spec=>q[0], File::Which=>q[0], IO::Lines=>q[0], Module::Runtime=>q[0], File::Find=>q[0], Test::Most=>q[0], File::Path=>q[0], File::Spec::Functions=>q[0], Try::Tiny=>q[0], warnings=>q[0], File::Copy=>q[0], Carp=>q[0], strict=>q[0], Test::More=>q[0], Class::Std::Utils=>q[0], File::Temp=>q[0], common::sense=>q[0], Cwd=>q[0] }
+#     VERSION => q[0.07_04]
 #     test => { TESTS=>q[t/*.t t/lib/cvs/*.t] }
 
 # --- MakeMaker post_initialize section:
@@ -60,11 +60,11 @@ DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
 NAME = Cvs::Simple
 NAME_SYM = Cvs_Simple
-VERSION = 0.07_03
+VERSION = 0.07_04
 VERSION_MACRO = VERSION
-VERSION_SYM = 0_07_03
+VERSION_SYM = 0_07_04
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 0.07_03
+XS_VERSION = 0.07_04
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib/arch
@@ -262,7 +262,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = Cvs-Simple
-DISTVNAME = Cvs-Simple-0.07_03
+DISTVNAME = Cvs-Simple-0.07_04
 
 
 # --- MakeMaker macro section:
@@ -515,16 +515,16 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - inc' >> META_new.yml
 	$(NOECHO) $(ECHO) 'requires:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Capture::Tiny: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Carp: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Class::Std::Utils: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  File::Which: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  IO::Lines: 0' >> META_new.yml
-	$(NOECHO) $(ECHO) '  IO::Pipe: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Module::Runtime: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Scalar::Util: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Try::Tiny: 0' >> META_new.yml
 	$(NOECHO) $(ECHO) '  common::sense: 0' >> META_new.yml
-	$(NOECHO) $(ECHO) 'version: 0.07_03' >> META_new.yml
+	$(NOECHO) $(ECHO) 'version: 0.07_04' >> META_new.yml
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	$(NOECHO) $(ECHO) Generating META.json
 	$(NOECHO) $(ECHO) '{' > META_new.json
@@ -572,11 +572,11 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      },' >> META_new.json
 	$(NOECHO) $(ECHO) '      "runtime" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Capture::Tiny" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Carp" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Class::Std::Utils" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "File::Which" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "IO::Lines" : "0",' >> META_new.json
-	$(NOECHO) $(ECHO) '            "IO::Pipe" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Module::Runtime" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Scalar::Util" : "0",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Try::Tiny" : "0",' >> META_new.json
@@ -585,7 +585,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      }' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
 	$(NOECHO) $(ECHO) '   "release_status" : "testing",' >> META_new.json
-	$(NOECHO) $(ECHO) '   "version" : "0.07_03"' >> META_new.json
+	$(NOECHO) $(ECHO) '   "version" : "0.07_04"' >> META_new.json
 	$(NOECHO) $(ECHO) '}' >> META_new.json
 	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
 
@@ -885,11 +885,11 @@ ppd :
 	$(NOECHO) $(ECHO) '    <ABSTRACT>Perl interface to cvs.</ABSTRACT>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Stephen Cardie &lt;stephenca@ls26.net&gt;</AUTHOR>' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> $(DISTNAME).ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Capture::Tiny" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Carp::" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Class::Std::Utils" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="File::Which" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="IO::Lines" />' >> $(DISTNAME).ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="IO::Pipe" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Module::Runtime" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Scalar::Util" />' >> $(DISTNAME).ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Try::Tiny" />' >> $(DISTNAME).ppd

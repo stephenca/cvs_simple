@@ -2,7 +2,7 @@ package Cvs::Simple::Hook;
 use common::sense;
 
 # Version set by dist.ini; do not change here.
-our $VERSION = '0.07_03'; # VERSION
+our $VERSION = '0.07_04'; # VERSION
 
 
 {
@@ -58,7 +58,7 @@ Cvs::Simple::Hook - limits allowed cvs commands.
 
 =head1 VERSION
 
-version 0.07_03
+version 0.07_04
 
 =head1 DESCRIPTION
 

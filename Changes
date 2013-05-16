@@ -1,4 +1,8 @@
 Revision history for Perl extension Cvs::Simple.
+0.07_04   Thu May 16 16:49:35 2013 +0100
+    - Replace IO::Pipe with Capture::Tiny; this allows to examine return codes
+      (Stephen Cardie)
+
 0.07_03   Tue May 14 17:13:50 2013 +0100
     - Remove needless use of brackets in assignments. (Stephen Cardie)
     - Replace UNIVERSAL::isa() with Scalar::Util::reftype(). (Stephen Cardie)

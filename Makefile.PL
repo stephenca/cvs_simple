@@ -33,17 +33,17 @@ my %WriteMakefileArgs = (
   "LICENSE" => "perl",
   "NAME" => "Cvs::Simple",
   "PREREQ_PM" => {
+    "Capture::Tiny" => 0,
     "Carp" => 0,
     "Class::Std::Utils" => 0,
     "File::Which" => 0,
     "IO::Lines" => 0,
-    "IO::Pipe" => 0,
     "Module::Runtime" => 0,
     "Scalar::Util" => 0,
     "Try::Tiny" => 0,
     "common::sense" => 0
   },
-  "VERSION" => "0.07_03",
+  "VERSION" => "0.07_04",
   "test" => {
     "TESTS" => "t/*.t t/lib/cvs/*.t"
   }

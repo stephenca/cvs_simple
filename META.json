@@ -32,11 +32,11 @@
       },
       "runtime" : {
          "requires" : {
+            "Capture::Tiny" : "0",
             "Carp" : "0",
             "Class::Std::Utils" : "0",
             "File::Which" : "0",
             "IO::Lines" : "0",
-            "IO::Pipe" : "0",
             "Module::Runtime" : "0",
             "Scalar::Util" : "0",
             "Try::Tiny" : "0",
@@ -64,11 +64,11 @@
    "provides" : {
       "Cvs::Simple" : {
          "file" : "lib/Cvs/Simple.pm",
-         "version" : "0.07_03"
+         "version" : "0.07_04"
       },
       "Cvs::Simple::Hook" : {
          "file" : "lib/Cvs/Simple/Hook.pm",
-         "version" : "0.07_03"
+         "version" : "0.07_04"
       }
    },
    "release_status" : "testing",
@@ -76,8 +76,12 @@
       "bugtracker" : {
          "mailto" : "bug-cvs-simple at rt.cpan.org",
          "web" : "http://rt.cpan.org/Public/Dist/Display.html?Name=Cvs-Simple"
+      },
+      "repository" : {
+         "type" : "git",
+         "url" : "https://github.com/stephenca/cvs_simple.git"
       }
    },
-   "version" : "0.07_03"
+   "version" : "0.07_04"
 }
 
