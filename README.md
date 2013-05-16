@@ -4,7 +4,7 @@ Cvs::Simple - Perl interface to cvs.
 
 # VERSION
 
-version 0.07\_03
+version 0.07\_04
 
 # SYNOPSIS
 
