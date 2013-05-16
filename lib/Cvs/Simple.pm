@@ -1,6 +1,7 @@
 package Cvs::Simple;
 use common::sense;
 
+use Capture::Tiny     qw(capture_merged);
 use Carp;
 use Class::Std::Utils;
 use Cvs::Simple::Hook;
@@ -8,11 +9,11 @@ use Cvs::Simple::Hook;
 use File::Which       qw(which);
 
 use IO::Lines;
-use IO::Pipe;
 
 use Module::Runtime   qw(require_module);
 
 use Scalar::Util      qw(reftype);
+
 use Try::Tiny;
 
 # Version set by dist.ini; do not change here.
@@ -139,18 +140,29 @@ use Try::Tiny;
         my $self = shift;
         my $cmd = shift;
 
-        my $fh = IO::Pipe->new;
-        $fh->reader( "$cmd 2>&1" );
-        if(defined($fh)) {
-            my $SH = IO::Lines->new();
-            $SH->print( $fh->getlines );
+        my ($output,@result) = capture_merged {
+            system( $cmd );
+        };
 
-            $fh->close or carp "Close failed:$!";
-
-            return $SH;
+        # 'man cvs' tells us that the return code from 'cvs diff' never
+        # indicates an error, so we only check this for other commands.
+        if($cmd =~ m{\bdiff\b}) {
+            if($output =~ m{unknown command}i) {
+                croak("Failed to execute diff command: $output");
+            } else {
+                ()
+            }
         } else {
-            croak "Failed to open $cmd:$!";
+            if($result[0] == 0 ) {
+                ();
+            } else {
+                croak("Failed to execute command: $output");
+            }
         }
+
+        my $SH = IO::Lines->new();
+        $SH->print( $output );
+        return $SH;
     }
 
     sub cvs_cmd 
