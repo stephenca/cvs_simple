@@ -34,13 +34,12 @@ use Try::Tiny;
 
     sub _init 
     {
-        my($self) = shift;
-        my(%args) = @_;
+        my $self = shift;
+        my %args = @_;
 
         if(exists $args{cvs_bin}) {
             $self->cvs_bin($args{cvs_bin});
-        }
-        else {
+        } else {
             if(defined($ENV{CVS_SIMPLE_BIN})) {
                 $self->cvs_bin($ENV{CVS_SIMPLE_BIN});
             } else {
@@ -142,13 +141,16 @@ use Try::Tiny;
 
         my $fh = IO::Pipe->new;
         $fh->reader( "$cmd 2>&1" );
-        defined($fh) or croak "Failed to open $cmd:$!";
-        my($SH) = IO::Lines->new();
-        $SH->print( $fh->getlines );
+        if(defined($fh)) {
+            my $SH = IO::Lines->new();
+            $SH->print( $fh->getlines );
 
-        $fh->close or carp "Close failed:$!";
+            $fh->close or carp "Close failed:$!";
 
-        return $SH;
+            return $SH;
+        } else {
+            croak "Failed to open $cmd:$!";
+        }
     }
 
     sub cvs_cmd 
@@ -162,7 +164,7 @@ use Try::Tiny;
 
         my $hook = Cvs::Simple::Hook::get_hook $cmd;
 
-        my $fh = $self->_pipe( "$cmd 2>&1" );
+        my $fh = $self->_pipe( $cmd );
 
         my($hookfunc) = $self->callback($hook) ||
         $self->callback();
